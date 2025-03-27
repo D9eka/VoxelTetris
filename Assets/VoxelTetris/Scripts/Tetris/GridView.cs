@@ -27,15 +27,15 @@ public class GridView : MonoBehaviour
         GeneratePlatform(-1, width, depth);
 
         GenerateXWall(-1, height, depth, _leftWall.transform);
-        GenerateXWall(width - 1, height, depth, _rightWall.transform);
+        GenerateXWall(width, height, depth, _rightWall.transform);
 
         GenerateZWall(-1, width, height, _downWall.transform);
-        GenerateZWall(depth - 1, width, height, _upWall.transform);
+        GenerateZWall(depth, width, height, _upWall.transform);
 
         GenerateCorner(-1, height, -1, _leftDownCorner.transform);
-        GenerateCorner(-1, height, depth - 1, _leftUpCorner.transform);
-        GenerateCorner(width - 1, height, -1, _rightDownCorner.transform);
-        GenerateCorner(width -1, height, depth - 1, _rightUpCorner.transform);
+        GenerateCorner(-1, height, depth, _leftUpCorner.transform);
+        GenerateCorner(width, height, -1, _rightDownCorner.transform);
+        GenerateCorner(width, height, depth, _rightUpCorner.transform);
     }
 
     private void SpawnBlockParents()
@@ -62,9 +62,9 @@ public class GridView : MonoBehaviour
 
     private void GeneratePlatform(int y, int width, int depth)
     {
-        for (int x = -1; x < width; x++)
+        for (int x = -1; x <= width; x++)
         {
-            for (int z = -1; z < depth; z++)
+            for (int z = -1; z <= depth; z++)
             {
                 InstantiateBlock(new Vector3(x, y, z), _platform.transform);
             }
@@ -75,7 +75,7 @@ public class GridView : MonoBehaviour
     {
         for (int y = height - 1; y >= 0; y--)
         {
-            for (int z = 0; z < depth - 1; z++)
+            for (int z = 0; z < depth; z++)
             {
                 InstantiateBlock(new Vector3(x, y, z), parent);
             }
@@ -86,7 +86,7 @@ public class GridView : MonoBehaviour
     {
         for (int y = height - 1; y >= 0; y--)
         {
-            for (int x = 0; x < width - 1; x++)
+            for (int x = 0; x < width; x++)
             {
                 InstantiateBlock(new Vector3(x, y, z), parent);
             }
