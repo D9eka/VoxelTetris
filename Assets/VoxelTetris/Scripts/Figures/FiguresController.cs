@@ -62,6 +62,7 @@ public class FiguresController : MonoBehaviour
         while (TryMove(_activeFigure, directionInt))
         {
         }
+        _activeFigure = null;
     }
 
     public void Move(Vector2 direction)
