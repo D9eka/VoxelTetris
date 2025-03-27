@@ -25,6 +25,6 @@ public class FigureSpawner
 
     private GameObject GetRandomFigurePrefab()
     {
-        return _figuresPrefabs[Random.Range(0, _figuresPrefabs.Length - 1)];
+        return _figuresPrefabs[Random.Range(0, _figuresPrefabs.Length)];
     }
 }
