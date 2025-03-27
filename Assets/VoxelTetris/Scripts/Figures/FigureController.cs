@@ -21,6 +21,11 @@ public class FigureController : MonoBehaviour
         Debug.Log(Model.ToString());
     }
 
+    public void Move(Vector3Int directionInt)
+    {
+        _view.transform.position += directionInt;
+    }
+
     public void DeleteFigurePart(FigurePartController figurePart)
     {
         Model.Parts.Remove(figurePart.Model);

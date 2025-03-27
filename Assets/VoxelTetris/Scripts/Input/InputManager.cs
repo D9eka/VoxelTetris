@@ -14,16 +14,16 @@ public class InputManager : MonoBehaviour
         _inputActions = new InputActions();
 
         _inputActions.Player.MoveFigure.performed += (UnityEngine.InputSystem.InputAction.CallbackContext context)
-            => FigureMovementController.Instance.Move(context.ReadValue<Vector2>());
+            => FiguresController.Instance.Move(context.ReadValue<Vector2>());
         _inputActions.Player.DropFigure.performed += (UnityEngine.InputSystem.InputAction.CallbackContext context)
-            => FigureMovementController.Instance.MoveToBottom();
+            => FiguresController.Instance.MoveToBottom();
 
         _inputActions.Player.RotateFigureX.performed += (UnityEngine.InputSystem.InputAction.CallbackContext context)
-            => FigureMovementController.Instance.Rotate(new Vector3(1, 0, 0));
+            => FiguresController.Instance.Rotate(new Vector3(1, 0, 0));
         _inputActions.Player.RotateFigureY.performed += (UnityEngine.InputSystem.InputAction.CallbackContext context)
-            => FigureMovementController.Instance.Rotate(new Vector3(0, 1, 0));
+            => FiguresController.Instance.Rotate(new Vector3(0, 1, 0));
         _inputActions.Player.RotateFigureZ.performed += (UnityEngine.InputSystem.InputAction.CallbackContext context)
-            => FigureMovementController.Instance.Rotate(new Vector3(0, 0, 1));
+            => FiguresController.Instance.Rotate(new Vector3(0, 0, 1));
         
         _inputActions.Player.Enable();
     }

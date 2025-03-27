@@ -1,16 +1,18 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FigureMovementController : MonoBehaviour
+public class FiguresController : MonoBehaviour
 {
-    [SerializeField] private float _timeToDropFigure;
+    [SerializeField] private FiguresControllerData _data;
+    
+    private FigureSpawner _figureSpawner;
 
     private List<FigureController> _figuresToMove;
     private FigureController _activeFigure;
 
     private float _timeFromLastMove;
 
-    public static FigureMovementController Instance { get; private set; }
+    public static FiguresController Instance { get; private set; }
 
     private void Awake()
     {
@@ -18,15 +20,23 @@ public class FigureMovementController : MonoBehaviour
         _figuresToMove = new();
     }
 
+    private void Start()
+    {
+        GridModel gridModel = GridController.Instance.Model;
+        Vector3Int spawnPosition = Vector3Int.RoundToInt(
+            new Vector3(gridModel.Width / 2f, gridModel.Height - _data.SpawnOffsetY, gridModel.Depth / 2f));
+        _figureSpawner = new FigureSpawner(_data.FigurePrefabs, spawnPosition, transform);
+    }
+
     private void Update()
     {
-        if (_activeFigure == null)
+        if (_activeFigure is null)
         {
-            _activeFigure = FigureSpawner.Instance.SpawnFigure();
-            AddFigure(_activeFigure, true);
+            FigureController newActiveFigure = _figureSpawner.SpawnFigure();
+            AddFigure(newActiveFigure, true);
         }
 
-        MoveFiguresToMove();
+        MoveFigures();
     }
 
     public void AddFigures(IEnumerable<FigureController> figures)
@@ -40,6 +50,10 @@ public class FigureMovementController : MonoBehaviour
     public void AddFigure(FigureController figure, bool setActive = false)
     {
         _figuresToMove.Add(figure);
+        if (setActive)
+        {
+            _activeFigure = figure;
+        }
     }
 
     public void MoveToBottom()
@@ -47,7 +61,6 @@ public class FigureMovementController : MonoBehaviour
         Vector3Int directionInt = Vector3Int.down;
         while (TryMove(_activeFigure, directionInt))
         {
-            continue;
         }
     }
 
@@ -73,34 +86,11 @@ public class FigureMovementController : MonoBehaviour
         }
     }
 
-    private bool TryMove(FigureController figure, Vector3Int directionInt)
+    private void MoveFigures()
     {
-        if (GridController.Instance.TryMoveFigure(figure.Model, directionInt))
-        {
-            for (int i = 0; i < figure.Model.Parts.Count; i++)
-            {
-                figure.Model.Parts[i].SetPosition(figure.Model.Parts[i].Position + directionInt);
-            }
-
-            figure.View.transform.position += directionInt;
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    }
-
-    private void MoveFiguresToMove()
-    {
-        if (_timeFromLastMove < _timeToDropFigure)
+        if (_timeFromLastMove < _data.TimeToDropFigure)
         {
             _timeFromLastMove += Time.deltaTime;
-            return;
-        }
-
-        if (_figuresToMove == null || _figuresToMove.Count == 0)
-        {
             return;
         }
 
@@ -108,13 +98,29 @@ public class FigureMovementController : MonoBehaviour
         {
             if (!TryMove(_figuresToMove[i], Vector3Int.down))
             {
+                Debug.Log($"ФИГУРУ {_figuresToMove[i]} ({i}, {_figuresToMove[i] == _activeFigure}) БОЛЬШЕ НЕ ПОДВИНУТЬ");
                 if (_figuresToMove[i] == _activeFigure)
                 {
                     _activeFigure = null;
                 }
                 _figuresToMove.RemoveAt(i);
             }
+            else
+            {
+                Debug.Log($"ДВИНУЛ ФИГУРУ {_figuresToMove[i]} ({i}, {_figuresToMove[i] == _activeFigure}) НА {Vector3Int.down}");
+            }
         }
         _timeFromLastMove = 0;
+    }
+    
+    private bool TryMove(FigureController figure, Vector3Int directionInt)
+    {
+        if (GridController.Instance.TryMoveFigure(figure.Model, directionInt))
+        {
+            figure.Move(directionInt);
+            return true;
+        }
+        
+        return false;
     }
 }

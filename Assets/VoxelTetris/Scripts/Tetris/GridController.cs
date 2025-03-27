@@ -98,7 +98,7 @@ public class GridController : MonoBehaviour
             { 
                 if (clearPlane)
                 {
-                    FigureMovementController.Instance.AddFigures(planeModel.Figures);
+                    FiguresController.Instance.AddFigures(planeModel.Figures);
                 }
             }
         }
