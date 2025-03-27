@@ -7,7 +7,8 @@ public class GridController : MonoBehaviour
     [SerializeField] private Vector3Int _grid;
     [SerializeField] private int _limitY;
     [SerializeField] private GridView _view;
-
+    
+    public GridView View => _view;
     public GridModel Model { get; private set; }
 
     public Action<FigureController> OnPlaceFigure;
@@ -21,10 +22,6 @@ public class GridController : MonoBehaviour
         Instance = this;
 
         Model = new GridModel(_grid.x, _grid.y, _grid.z, _limitY);
-    }
-
-    private void Start()
-    {
         _view.GenerateGrid(_grid.x, _limitY, _grid.z);
     }
 
