@@ -44,42 +44,44 @@ public class GridController : MonoBehaviour
     public bool TryMoveFigure(FigureModel figureModel, Vector3Int directionInt)
     {
         List<FigurePartModel> figureParts = figureModel.Parts;
+    
         for (int i = 0; i < figureParts.Count; i++)
         {
-            if (!TryMoveFigurePart(figureParts[i], directionInt))
+            Vector3Int newPlacePosition = figureParts[i].Position + directionInt;
+            if (!IsInGrid(newPlacePosition))
             {
-                for (int j = 0; j < i; j++)
-                {
-                    TryMoveFigurePart(figureParts[i], -directionInt);
-                }
-                    return false;
+                Debug.Log($"НЕ В ГРИДЕ: {figureParts[i].Position} -> {newPlacePosition}");
+                return false;
             }
+            FigurePartModel newPlace = Model.GetPart(newPlacePosition);
+            if (newPlace != null && newPlace.Parent != figureModel.Parts[0].Parent)
+            {
+                Debug.Log($"НОВАЯ ПОЗИЦИЯ ЗАНЯТА: {newPlacePosition}");
+                return false;
+            }
+        }
+        
+        for (int i = 0; i < figureParts.Count; i++)
+        {
+            TryMoveFigurePart(figureParts[i], directionInt);
         }
         OnPlaceFigure?.Invoke(figureModel.Parts[0].Parent);
         Check();
         return true;
     }
 
-    public bool TryMoveFigurePart(FigurePartModel figurePartModel, Vector3Int directionInt)
+    private bool TryMoveFigurePart(FigurePartModel figurePartModel, Vector3Int directionInt)
     {
-        Vector3Int newPlacePosition = figurePartModel.Position + directionInt;
-        if (!IsInGrid(newPlacePosition))
-        {
-            return false;
-        }
-
-        FigurePartModel newPlace = Model.GetPart(newPlacePosition);
-        if (newPlace != null && newPlace.Parent != figurePartModel.Parent)
-        {
-            return false;
-        }
         FigurePartModel oldPlace = Model.GetPart(figurePartModel.Position);
         if (oldPlace != null)
         {
             Model.Grid[figurePartModel.Position.y].Remove(
                 new Vector2Int(figurePartModel.Position.x, figurePartModel.Position.z));
         }
+        
+        Vector3Int newPlacePosition = figurePartModel.Position + directionInt;
         Model.Grid[newPlacePosition.y].Add(figurePartModel, new Vector2Int(newPlacePosition.x, newPlacePosition.z));
+        figurePartModel.SetPosition(newPlacePosition);
         return true;
     }
 
