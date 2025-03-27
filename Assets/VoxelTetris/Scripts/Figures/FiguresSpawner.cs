@@ -1,33 +1,26 @@
 using UnityEngine;
 
-public class FigureSpawner : MonoBehaviour
+public class FigureSpawner
 {
-    [SerializeField] private GameObject[] _figuresPrefabs;
-    [SerializeField] private int _offsetY;
-
+    private GameObject[] _figuresPrefabs;
     private Vector3Int _spawnPosition;
+    private Transform _parentTransform;
 
-    public static FigureSpawner Instance { get; private set; }
-
-    private void Awake()
+    public FigureSpawner(GameObject[] figuresPrefabs, Vector3Int spawnPosition, Transform parentTransform)
     {
-        Instance = this;
-    }
-
-    private void Start()
-    {
-        GridModel gridModel = GridController.Instance.Model;
-        _spawnPosition = Vector3Int.RoundToInt(
-            new Vector3(gridModel.Width / 2f, gridModel.Height - _offsetY, gridModel.Depth / 2f));
+        _figuresPrefabs = figuresPrefabs;
+        _spawnPosition = spawnPosition;
+        _parentTransform = parentTransform;
     }
 
     public FigureController SpawnFigure()
     {
-        return Instantiate(
+        Debug.Log(_spawnPosition.ToString());
+        return GameObject.Instantiate(
             GetRandomFigurePrefab(),
             _spawnPosition, 
             Quaternion.identity, 
-            transform).GetComponent<FigureController>();
+            _parentTransform).GetComponent<FigureController>();
     }
 
     private GameObject GetRandomFigurePrefab()
