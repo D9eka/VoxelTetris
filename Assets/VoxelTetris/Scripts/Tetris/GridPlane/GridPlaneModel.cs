@@ -29,14 +29,13 @@ public class GridPlaneModel
 
     public void Remove(Vector2Int position)
     {
-        FigurePartModel figurePart = Plane[position.x, position.y];
-        FigureController figurePartParent = figurePart.Parent;
+        FigureController figurePartParent = Plane[position.x, position.y].Parent;
         Figures.Remove(figurePartParent);
         if (LastFigure == figurePartParent)
         {
             LastFigure = null;
         }
-        figurePart = null;
+        Plane[position.x, position.y] = null;
     }
 
     public bool IsFull()
