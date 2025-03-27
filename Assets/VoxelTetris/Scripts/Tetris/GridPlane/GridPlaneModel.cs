@@ -44,7 +44,7 @@ public class GridPlaneModel
         {
             for (int j = 0; j < Plane.GetLength(1); j++)
             {
-                if (Plane[i, j] == null)
+                if (Plane[i, j] is null)
                 {
                     return false;
                 }

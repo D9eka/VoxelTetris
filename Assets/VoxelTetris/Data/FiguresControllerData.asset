@@ -14,5 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _figurePrefabs:
   - {fileID: 7045488633443042552, guid: 957f1eac2ccf0b84a8889c2cacce5742, type: 3}
+  - {fileID: 5465472151022654334, guid: f826db5e8834064448c3881b9ac87536, type: 3}
+  - {fileID: 3840234510136229, guid: 5d5678c1db9c52c408bd5bf7093cc166, type: 3}
+  - {fileID: 6883263661492116528, guid: 8fcc203b52aec054aaa56fde9cd1a5c0, type: 3}
+  - {fileID: 336621199639706501, guid: a9b24d16cc654fe42acf040271281c62, type: 3}
+  - {fileID: 7050380936880667873, guid: 2009f696f4f56ad4ba6c35b2b6558bc0, type: 3}
+  - {fileID: 5412748219025169363, guid: 5e8a03426b81b77409829905c08ba6cd, type: 3}
   _spawnOffsetY: 5
   _timeToDropFigure: 1

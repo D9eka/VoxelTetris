@@ -2,11 +2,13 @@ using UnityEngine;
 
 public class FigurePartModel
 {
+    public FigurePartController Controller { get; private set; }
     public FigureController Parent { get; private set; }
     public Vector3Int Position { get; private set; }
 
-    public FigurePartModel(FigureController parent, Vector3Int position)
+    public FigurePartModel(FigurePartController controller, FigureController parent, Vector3Int position)
     {
+        Controller = controller;
         Parent = parent;
         Position = position;
     }

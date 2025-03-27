@@ -87,6 +87,20 @@ public class FiguresController : MonoBehaviour
         }
     }
 
+    public void RemoveFiguresPartAtPlane(IEnumerable<FigureController> figures, int planePosY)
+    {
+        foreach (FigureController figure in figures)
+        {
+            for (int i = 0; i < figure.Model.Parts.Count; i++)
+            {
+                if (figure.Model.Parts[i].Position.y == planePosY)
+                {
+                    figure.DeleteFigurePart(figure.Model.Parts[i].Controller);
+                }
+            }
+        }
+    }
+
     private void MoveFigures()
     {
         if (_timeFromLastMove < _data.TimeToDropFigure)
@@ -121,7 +135,6 @@ public class FiguresController : MonoBehaviour
             figure.Move(directionInt);
             return true;
         }
-        
         return false;
     }
 }

@@ -41,6 +41,10 @@ public class GridController : MonoBehaviour
     public bool TryMoveFigure(FigureModel figureModel, Vector3Int directionInt)
     {
         List<FigurePartModel> figureParts = figureModel.Parts;
+        if (figureParts.Count == 0)
+        {
+            return false;
+        }
     
         for (int i = 0; i < figureParts.Count; i++)
         {
@@ -48,12 +52,16 @@ public class GridController : MonoBehaviour
             if (!IsInGrid(newPlacePosition))
             {
                 Debug.Log($"НЕ В ГРИДЕ: {figureParts[i].Position} -> {newPlacePosition}");
+                OnPlaceFigure?.Invoke(figureModel.Parts[0].Parent);
+                CheckForFullPlanes();
                 return false;
             }
             FigurePartModel newPlace = Model.GetPart(newPlacePosition);
             if (newPlace != null && newPlace.Parent != figureModel.Parts[0].Parent)
             {
                 Debug.Log($"НОВАЯ ПОЗИЦИЯ ЗАНЯТА: {newPlacePosition}");
+                OnPlaceFigure?.Invoke(figureModel.Parts[0].Parent);
+                CheckForFullPlanes();
                 return false;
             }
         }
@@ -62,8 +70,6 @@ public class GridController : MonoBehaviour
         {
             TryMoveFigurePart(figureParts[i], directionInt);
         }
-        OnPlaceFigure?.Invoke(figureModel.Parts[0].Parent);
-        Check();
         return true;
     }
 
@@ -82,22 +88,23 @@ public class GridController : MonoBehaviour
         return true;
     }
 
-    private void Check()
+    private void CheckForFullPlanes()
     {
         bool clearPlane = false;
-        foreach(GridPlaneModel planeModel in Model.Grid)
+        for (int i = 0; i < Model.Grid.Length; i++)
         {
-            if (planeModel.IsFull())
+            if (Model.Grid[i].IsFull())
             {
-                OnClearPlane?.Invoke(planeModel.LastFigure);
-                planeModel.Clear();
+                OnClearPlane?.Invoke(Model.Grid[i].LastFigure);
+                FiguresController.Instance.RemoveFiguresPartAtPlane(Model.Grid[i].Figures, i);
+                Model.Grid[i].Clear();
                 clearPlane = true;
             }
             else
             { 
                 if (clearPlane)
                 {
-                    FiguresController.Instance.AddFigures(planeModel.Figures);
+                    FiguresController.Instance.AddFigures(Model.Grid[i].Figures);
                 }
             }
         }

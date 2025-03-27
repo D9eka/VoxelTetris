@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class FigurePartController : MonoBehaviour
@@ -9,6 +10,11 @@ public class FigurePartController : MonoBehaviour
     private void Awake()
     {
         FigureController figureModel = _view.GetComponentInParent<FigureController>();
-        Model = new(figureModel, Vector3Int.RoundToInt(_view.transform.position));
+        Model = new(this, figureModel, Vector3Int.RoundToInt(_view.transform.position));
+    }
+
+    private void OnDestroy()
+    {
+        Destroy(_view.gameObject);
     }
 }
