@@ -22,7 +22,7 @@ public class GridModel
         }
         else
         {
-            UnityEngine.Debug.LogError($"LIMIT ¡ŒÀ‹ÿ≈ HEIGHT: {limitY}vs{Height}");
+            UnityEngine.Debug.LogError($"LIMIT –ë–û–õ–¨–®–ï HEIGHT: {limitY}vs{Height}");
         }
     }
 
