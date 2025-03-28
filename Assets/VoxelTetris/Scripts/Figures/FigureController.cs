@@ -35,24 +35,7 @@ public class FigureController : MonoBehaviour
 
     private void CreateModel()
     {
-        Vector3Int centerPartPosition = Vector3Int.RoundToInt(_view.Center.transform.position);
-        List<FigurePartModel> parts = new();
-        FigurePartModel center = null;
-        int minHeight = 999;
-        int maxHeight = 0;
-        foreach (FigurePartController part in _view.Parts)
-        {
-            parts.Add(part.Model);
-            if (part.Model.Position == centerPartPosition)
-            {
-                center = part.Model;
-            }
-            minHeight = Mathf.Min(part.Model.Position.y, minHeight);
-            maxHeight = Mathf.Max(part.Model.Position.y, maxHeight);
-        }
-        int height = maxHeight - minHeight + 1;
-        Model = new FigureModel(this, parts, center, height);
-        //Debug.Log(Model.ToString());
+        Model = FigureModelFactory.CreateFigureModel(this);
     }
 }
 
