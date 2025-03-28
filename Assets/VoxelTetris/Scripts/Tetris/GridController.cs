@@ -62,6 +62,7 @@ public class GridController : MonoBehaviour
                 //Debug.Log($"НОВАЯ ПОЗИЦИЯ ЗАНЯТА: {newPlacePosition}");
                 OnPlaceFigure?.Invoke(figureModel.Parts[0].Parent);
                 CheckForFullPlanes();
+                CheckForFiguresInLimit();
                 return false;
             }
         }
@@ -108,11 +109,15 @@ public class GridController : MonoBehaviour
                 }
             }
         }
+    }
+
+    private void CheckForFiguresInLimit()
+    {
         if (HaveFiguresInLimit())
         {
             OnReachLimit?.Invoke();
         }
-    }    
+    }
 
     private bool HaveFiguresInLimit()
     {

@@ -11,6 +11,7 @@ public class FiguresController : MonoBehaviour
     private FigureController _activeFigure;
 
     private float _timeFromLastMove;
+    private bool _active;
 
     public static FiguresController Instance { get; private set; }
 
@@ -26,10 +27,18 @@ public class FiguresController : MonoBehaviour
         Vector3Int spawnPosition = Vector3Int.RoundToInt(
             new Vector3(gridModel.Width / 2f, gridModel.Height - _data.SpawnOffsetY, gridModel.Depth / 2f));
         _figureSpawner = new FigureSpawner(_data.FigurePrefabs, spawnPosition, transform);
+        _active = true;
+        
+        GridController.Instance.OnReachLimit += OnReachLimit;
     }
 
     private void Update()
     {
+        if (!_active)
+        {
+            return;
+        }
+        
         if (_activeFigure is null)
         {
             FigureController newActiveFigure = _figureSpawner.SpawnFigure();
@@ -100,6 +109,13 @@ public class FiguresController : MonoBehaviour
                 }
             }
         }
+    }
+
+    private void OnReachLimit()
+    {
+        _active = false;
+        _activeFigure = null;
+        Debug.Log("Reach Limit");
     }
 
     private void MoveFigures()
