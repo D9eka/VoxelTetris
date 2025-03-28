@@ -91,11 +91,12 @@ public class FiguresController : MonoBehaviour
     {
         foreach (FigureController figure in figures)
         {
-            for (int i = 0; i < figure.Model.Parts.Count; i++)
+            List<FigurePartModel> figureParts = figure.Model.Parts;
+            for (int i = 0; i < figureParts.Count; i++)
             {
-                if (figure.Model.Parts[i].Position.y == planePosY)
+                if (figureParts[i].Position.y == planePosY)
                 {
-                    figure.DeleteFigurePart(figure.Model.Parts[i].Controller);
+                    figure.DeleteFigurePart(figureParts[i].Controller);
                 }
             }
         }
@@ -113,7 +114,7 @@ public class FiguresController : MonoBehaviour
         {
             if (!TryMove(_figuresToMove[i], Vector3Int.down))
             {
-                Debug.Log($"ФИГУРУ {_figuresToMove[i]} ({i}, {_figuresToMove[i] == _activeFigure}) БОЛЬШЕ НЕ ПОДВИНУТЬ");
+                //Debug.Log($"ФИГУРУ {_figuresToMove[i]} ({i}, {_figuresToMove[i] == _activeFigure}) БОЛЬШЕ НЕ ПОДВИНУТЬ");
                 if (_figuresToMove[i] == _activeFigure)
                 {
                     _activeFigure = null;
@@ -122,7 +123,7 @@ public class FiguresController : MonoBehaviour
             }
             else
             {
-                Debug.Log($"ДВИНУЛ ФИГУРУ {_figuresToMove[i]} ({i}, {_figuresToMove[i] == _activeFigure}) НА {Vector3Int.down}");
+                //Debug.Log($"ДВИНУЛ ФИГУРУ {_figuresToMove[i]} ({i}, {_figuresToMove[i] == _activeFigure}) НА {Vector3Int.down}");
             }
         }
         _timeFromLastMove = 0;

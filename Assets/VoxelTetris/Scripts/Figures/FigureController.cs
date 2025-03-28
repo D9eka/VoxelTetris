@@ -3,12 +3,13 @@ using UnityEngine;
 
 public class FigureController : MonoBehaviour
 {
-    [SerializeField] private FigureView _view;
+    public FigurePartController[] Parts => GetComponentsInChildren<FigurePartController>();
 
-    public FigureView View => _view;
+    public FigurePartController Center => _center;
+    
+    [SerializeField] private FigurePartController _center;
+
     public FigureModel Model { get; private set; }
-
-    public FigurePartModel Center => Model.Center;
 
     private void Start()
     {
@@ -23,7 +24,7 @@ public class FigureController : MonoBehaviour
 
     public void Move(Vector3Int directionInt)
     {
-        _view.transform.position += directionInt;
+        transform.position += directionInt;
     }
 
     public void DeleteFigurePart(FigurePartController figurePart)
