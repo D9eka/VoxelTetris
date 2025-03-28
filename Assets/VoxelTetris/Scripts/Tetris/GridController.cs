@@ -51,7 +51,7 @@ public class GridController : MonoBehaviour
             Vector3Int newPlacePosition = figureParts[i].Position + directionInt;
             if (!IsInGrid(newPlacePosition))
             {
-                Debug.Log($"НЕ В ГРИДЕ: {figureParts[i].Position} -> {newPlacePosition}");
+                //Debug.Log($"НЕ В ГРИДЕ: {figureParts[i].Position} -> {newPlacePosition}");
                 OnPlaceFigure?.Invoke(figureModel.Parts[0].Parent);
                 CheckForFullPlanes();
                 return false;
@@ -59,7 +59,7 @@ public class GridController : MonoBehaviour
             FigurePartModel newPlace = Model.GetPart(newPlacePosition);
             if (newPlace != null && newPlace.Parent != figureModel.Parts[0].Parent)
             {
-                Debug.Log($"НОВАЯ ПОЗИЦИЯ ЗАНЯТА: {newPlacePosition}");
+                //Debug.Log($"НОВАЯ ПОЗИЦИЯ ЗАНЯТА: {newPlacePosition}");
                 OnPlaceFigure?.Invoke(figureModel.Parts[0].Parent);
                 CheckForFullPlanes();
                 return false;

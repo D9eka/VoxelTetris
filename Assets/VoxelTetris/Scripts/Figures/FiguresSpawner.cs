@@ -15,7 +15,6 @@ public class FigureSpawner
 
     public FigureController SpawnFigure()
     {
-        Debug.Log(_spawnPosition.ToString());
         return GameObject.Instantiate(
             GetRandomFigurePrefab(),
             _spawnPosition, 
