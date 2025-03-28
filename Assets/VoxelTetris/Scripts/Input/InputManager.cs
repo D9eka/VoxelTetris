@@ -1,9 +1,12 @@
+using System;
 using UnityEngine;
 
 public class InputManager : MonoBehaviour
 {
     private InputActions _inputActions;
 
+    public Action<float> OnRotateCamera;
+    
     public static InputManager Instance { get; private set; }
 
 
@@ -24,6 +27,8 @@ public class InputManager : MonoBehaviour
             => FiguresController.Instance.Rotate(new Vector3(0, 1, 0));
         _inputActions.Player.RotateFigureZ.performed += (UnityEngine.InputSystem.InputAction.CallbackContext context)
             => FiguresController.Instance.Rotate(new Vector3(0, 0, 1));
+        _inputActions.Player.RotateCamera.performed += (UnityEngine.InputSystem.InputAction.CallbackContext context)
+            => OnRotateCamera?.Invoke(context.ReadValue<float>());
         
         _inputActions.Player.Enable();
     }

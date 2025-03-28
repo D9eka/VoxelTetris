@@ -51,18 +51,18 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "RotateCamera",
+                    "name": "ZoomCamera",
                     "type": "Value",
-                    "id": "ef9f1d62-c07b-4df5-9ade-ce509d946b7a",
-                    "expectedControlType": "Vector2",
+                    "id": "d211169b-2160-4aae-8050-ee46b6d551d5",
+                    "expectedControlType": "Axis",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
                 },
                 {
-                    "name": "ZoomCamera",
+                    "name": "RotateCamera",
                     "type": "Value",
-                    "id": "d211169b-2160-4aae-8050-ee46b6d551d5",
+                    "id": "30b805fd-d0b9-4d2d-ac68-a8f8c7652443",
                     "expectedControlType": "Axis",
                     "processors": "",
                     "interactions": "",
@@ -204,33 +204,11 @@
                 },
                 {
                     "name": "",
-                    "id": "bf89454c-4fc7-466f-a3e3-fa9ce9f1abd0",
-                    "path": "<Mouse>/delta",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": ";Keyboard&Mouse",
-                    "action": "RotateCamera",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "8dad3e7e-b0ae-4d83-9c37-86adbd33960d",
-                    "path": "<Gamepad>/rightStick",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": ";Gamepad",
-                    "action": "RotateCamera",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "90b5ba00-edfd-499a-9ee1-49ca9cd36e23",
                     "path": "<Mouse>/scroll",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": ";Keyboard&Mouse",
                     "action": "ZoomCamera",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -252,7 +230,7 @@
                     "path": "<Gamepad>/leftTrigger",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": ";Gamepad",
                     "action": "ZoomCamera",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -263,7 +241,7 @@
                     "path": "<Gamepad>/rightTrigger",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": ";Gamepad",
                     "action": "ZoomCamera",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -289,6 +267,72 @@
                     "action": "DropFigure",
                     "isComposite": false,
                     "isPartOfComposite": false
+                },
+                {
+                    "name": "Keyboard",
+                    "id": "72e695e9-03c0-490b-9fe8-3711ccdb7aa5",
+                    "path": "1DAxis",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "RotateCamera",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "negative",
+                    "id": "db83eabd-9a43-44ea-a7e8-37ad450850c6",
+                    "path": "<Keyboard>/leftArrow",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "RotateCamera",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "positive",
+                    "id": "aab1be35-dd33-4c8b-a679-b14cfc48a18e",
+                    "path": "<Keyboard>/rightArrow",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "RotateCamera",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "Gamepad",
+                    "id": "eb2f14ac-379b-4582-8967-a6cbe89ba91e",
+                    "path": "1DAxis",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "RotateCamera",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "negative",
+                    "id": "e165ec8f-21d2-4a43-8c43-e0e9a0ab2ee7",
+                    "path": "<Gamepad>/rightStick/left",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Gamepad",
+                    "action": "RotateCamera",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "positive",
+                    "id": "91f354e3-1aa7-407c-b133-cb09b92c9e07",
+                    "path": "<Gamepad>/rightStick/right",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Gamepad",
+                    "action": "RotateCamera",
+                    "isComposite": false,
+                    "isPartOfComposite": true
                 }
             ]
         },
