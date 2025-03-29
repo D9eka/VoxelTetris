@@ -26,7 +26,7 @@ public class FiguresController : MonoBehaviour
         GridModel gridModel = GridController.Instance.Model;
         Vector3Int spawnPosition = Vector3Int.RoundToInt(
             new Vector3(gridModel.Width / 2f, gridModel.Height - _data.SpawnOffsetY, gridModel.Depth / 2f));
-        _figureSpawner = new FigureSpawner(_data.FigurePrefabs, spawnPosition, transform);
+        _figureSpawner = new FigureSpawner(_data.FigurePrefabs, spawnPosition, transform, _data.FigureColors);
         _active = true;
         
         GridController.Instance.OnReachLimit += OnReachLimit;
