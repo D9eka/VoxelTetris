@@ -20,5 +20,13 @@ MonoBehaviour:
   - {fileID: 336621199639706501, guid: a9b24d16cc654fe42acf040271281c62, type: 3}
   - {fileID: 7050380936880667873, guid: 2009f696f4f56ad4ba6c35b2b6558bc0, type: 3}
   - {fileID: 5412748219025169363, guid: 5e8a03426b81b77409829905c08ba6cd, type: 3}
+  _figureColors:
+  - {fileID: 2100000, guid: 76178dfc15cf85b4ba72ba0f611e7ef9, type: 2}
+  - {fileID: 2100000, guid: e0b395742b1a1c2448f07e873e00e458, type: 2}
+  - {fileID: 2100000, guid: bdec939b4c9a09845adcc6ed405da9c0, type: 2}
+  - {fileID: 2100000, guid: 2f5770f095ca9b34ea3ebd5cb99eab42, type: 2}
+  - {fileID: 2100000, guid: 9a81bec1d9864404390dce07c30b8018, type: 2}
+  - {fileID: 2100000, guid: 82c4fc98f5972c24fb52d048ffb7be62, type: 2}
+  - {fileID: 2100000, guid: 854948ad49138f94ca4c08686e767d7b, type: 2}
   _spawnOffsetY: 5
   _timeToDropFigure: 1

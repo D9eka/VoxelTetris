@@ -74,12 +74,27 @@ public class FiguresController : MonoBehaviour
         _activeFigure = null;
     }
 
-    public void Move(Vector2 direction)
+    public void Move(Vector2 input)
     {
-        Vector3Int directionInt = new Vector3Int(Mathf.RoundToInt(direction.y), 0, -Mathf.RoundToInt(direction.x));
-
+        float cameraAngle = CameraController.Instance.Angle;
+        float angleRad = -cameraAngle * Mathf.Deg2Rad;
+    
+        float x = input.x;
+        float z = input.y;
+    
+        float rotatedX = x * Mathf.Cos(angleRad) + z * Mathf.Sin(angleRad);
+        float rotatedZ = -x * Mathf.Sin(angleRad) + z * Mathf.Cos(angleRad);
+    
+        Vector3Int directionInt = new Vector3Int(
+            Mathf.RoundToInt(rotatedX),
+            0,
+            Mathf.RoundToInt(rotatedZ)
+        );
+    
         TryMove(_activeFigure, directionInt);
     }
+
+
 
     public void Rotate(Vector3 axis)
     {

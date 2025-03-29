@@ -1,7 +1,11 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
+    public float Angle => _targetAngle;
+    public static CameraController Instance { get; private set; }
+    
     [SerializeField] private Camera _camera;
     [SerializeField] private CameraData _data;
     
@@ -11,6 +15,12 @@ public class CameraController : MonoBehaviour
     private Vector3 _gridCenter;
     private float _gridHeight;
     private float _gridDepth;
+    
+
+    private void Awake()
+    {
+        Instance = this;
+    }
 
     private void Start()
     {
