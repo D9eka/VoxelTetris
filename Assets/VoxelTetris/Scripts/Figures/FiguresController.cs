@@ -24,7 +24,6 @@ public class FiguresController : MonoBehaviour
         Vector3Int spawnPosition = Vector3Int.RoundToInt(
             new Vector3(gridModel.Width / 2f, gridModel.Height - _data.SpawnOffsetY, gridModel.Depth / 2f));
         _figureSpawner = new FigureSpawner(_data.FigurePrefabs, spawnPosition, transform, _data.FigureColors);
-        _active = true;
         
         ServiceLocator.Instance.GridController.OnReachLimit += OnReachLimit;
     }
@@ -43,6 +42,12 @@ public class FiguresController : MonoBehaviour
         }
 
         MoveFigures();
+    }
+
+    [ContextMenu("StartSpawning")]
+    public void StartSpawning()
+    {
+        _active = true;
     }
 
     public void AddFigures(IEnumerable<FigureController> figures)
@@ -90,8 +95,6 @@ public class FiguresController : MonoBehaviour
     
         TryMove(_activeFigure, directionInt);
     }
-
-
 
     public void Rotate(Vector3 axis)
     {

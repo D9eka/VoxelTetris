@@ -6,11 +6,10 @@ public class FigureController : MonoBehaviour
     public FigurePartController[] Parts => GetComponentsInChildren<FigurePartController>();
 
     public FigurePartController Center => _center;
+    public FigureModel Model { get; private set; }
     
     [SerializeField] private FigurePartController _center;
-
-    public FigureModel Model { get; private set; }
-
+    
     private void Start()
     {
         CreateModel();
