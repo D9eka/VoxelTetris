@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -25,13 +26,6 @@ public class GridController : MonoBehaviour
     public void PrintModel()
     {
         Debug.Log(Model.ToString());
-    }
-
-    private bool IsInGrid(Vector3Int figurePart)
-    {
-        return figurePart.x >= 0 && figurePart.x < Model.Width &&
-               figurePart.y >= 0 && figurePart.y < Model.Height &&
-               figurePart.z >= 0 && figurePart.z < Model.Depth;
     }
 
     public bool TryMoveFigure(FigureModel figureModel, Vector3Int directionInt)
@@ -70,6 +64,21 @@ public class GridController : MonoBehaviour
         return true;
     }
 
+    public void ClearPlanes()
+    {
+        foreach (GridPlaneModel gridPlaneModel in Model.Grid)
+        {
+            gridPlaneModel.Clear();
+        }
+    }
+
+    private bool IsInGrid(Vector3Int figurePart)
+    {
+        return figurePart.x >= 0 && figurePart.x < Model.Width &&
+               figurePart.y >= 0 && figurePart.y < Model.Height &&
+               figurePart.z >= 0 && figurePart.z < Model.Depth;
+    }
+
     private bool TryMoveFigurePart(FigurePartModel figurePartModel, Vector3Int directionInt)
     {
         FigurePartModel oldPlace = Model.GetPart(figurePartModel.Position);
@@ -87,6 +96,8 @@ public class GridController : MonoBehaviour
 
     private void CheckForFullPlanes()
     {
+        FiguresController figuresController = ServiceLocator.Instance.FiguresController;
+        
         bool clearPlane = false;
         for (int i = 0; i < Model.Grid.Length; i++)
         {

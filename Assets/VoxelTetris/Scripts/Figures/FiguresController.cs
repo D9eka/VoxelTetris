@@ -123,6 +123,18 @@ public class FiguresController : MonoBehaviour
         }
     }
 
+    public void Reload()
+    {
+        foreach (FigureController figure in GetComponentsInChildren<FigureController>())
+        {
+            Destroy(figure.gameObject);
+        }
+        ServiceLocator.Instance.GridController.ClearPlanes();
+        _figuresToMove = new List<FigureController>();
+        _activeFigure = null;
+        _active = true;
+    }
+
     private void OnReachLimit()
     {
         _active = false;
