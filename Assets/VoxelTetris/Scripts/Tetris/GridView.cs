@@ -27,7 +27,7 @@ public class GridView : MonoBehaviour
         _hiddenWall = _initialWallToHide;
         HideWall(_hiddenWall);
         
-        InputManager.Instance.OnRotateCamera += OnRotateCamera;
+        ServiceLocator.Instance.InputManager.OnRotateCamera += OnRotateCamera;
     }
 
     public void GenerateGrid(int width, int height, int depth)

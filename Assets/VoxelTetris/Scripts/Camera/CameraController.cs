@@ -29,14 +29,14 @@ public class CameraController : MonoBehaviour
         _targetAngle = 0f;
         UpdateCameraPosition();
         
-        GridController gridController = GridController.Instance;
+        GridController gridController = ServiceLocator.Instance.GridController;
         _gridCenter = gridController.View.Center;
         
         GridModel gridModel = gridController.Model;
         _gridHeight = gridModel.Height;
         _gridDepth = gridModel.Depth;
 
-        InputManager.Instance.OnRotateCamera += OnRotateCamera;
+        ServiceLocator.Instance.InputManager.OnRotateCamera += OnRotateCamera;
     }
 
     private void Update()

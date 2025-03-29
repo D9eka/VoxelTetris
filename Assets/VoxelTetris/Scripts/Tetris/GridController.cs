@@ -15,12 +15,8 @@ public class GridController : MonoBehaviour
     public Action<FigureController> OnClearPlane;
     public Action OnReachLimit;
 
-    public static GridController Instance { get; private set; }
-
     private void Awake()
     {
-        Instance = this;
-
         Model = new GridModel(_grid.x, _grid.y, _grid.z, _limitY);
         _view.GenerateGrid(_grid.x, _limitY, _grid.z);
     }
@@ -97,7 +93,7 @@ public class GridController : MonoBehaviour
             if (Model.Grid[i].IsFull())
             {
                 OnClearPlane?.Invoke(Model.Grid[i].LastFigure);
-                FiguresController.Instance.RemoveFiguresPartAtPlane(Model.Grid[i].Figures, i);
+                figuresController.RemoveFiguresPartAtPlane(Model.Grid[i].Figures, i);
                 Model.Grid[i].Clear();
                 clearPlane = true;
             }
@@ -105,7 +101,7 @@ public class GridController : MonoBehaviour
             { 
                 if (clearPlane)
                 {
-                    FiguresController.Instance.AddFigures(Model.Grid[i].Figures);
+                    figuresController.AddFigures(Model.Grid[i].Figures);
                 }
             }
         }

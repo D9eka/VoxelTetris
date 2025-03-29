@@ -13,23 +13,20 @@ public class FiguresController : MonoBehaviour
     private float _timeFromLastMove;
     private bool _active;
 
-    public static FiguresController Instance { get; private set; }
-
     private void Awake()
     {
-        Instance = this;
         _figuresToMove = new();
     }
 
     private void Start()
     {
-        GridModel gridModel = GridController.Instance.Model;
+        GridModel gridModel = ServiceLocator.Instance.GridController.Model;
         Vector3Int spawnPosition = Vector3Int.RoundToInt(
             new Vector3(gridModel.Width / 2f, gridModel.Height - _data.SpawnOffsetY, gridModel.Depth / 2f));
         _figureSpawner = new FigureSpawner(_data.FigurePrefabs, spawnPosition, transform, _data.FigureColors);
         _active = true;
         
-        GridController.Instance.OnReachLimit += OnReachLimit;
+        ServiceLocator.Instance.GridController.OnReachLimit += OnReachLimit;
     }
 
     private void Update()
@@ -162,7 +159,7 @@ public class FiguresController : MonoBehaviour
     
     private bool TryMove(FigureController figure, Vector3Int directionInt)
     {
-        if (GridController.Instance.TryMoveFigure(figure.Model, directionInt))
+        if (ServiceLocator.Instance.GridController.TryMoveFigure(figure.Model, directionInt))
         {
             figure.Move(directionInt);
             return true;
