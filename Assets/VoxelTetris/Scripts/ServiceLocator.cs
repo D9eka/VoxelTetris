@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class ServiceLocator : MonoBehaviour
 {
+    public LevelController LevelController => _levelController;
     public InputManager InputManager => _inputManager;
     public CameraController CameraController => _cameraController;
     public UIController UIController => _uiController;
@@ -11,6 +12,7 @@ public class ServiceLocator : MonoBehaviour
     
     public static ServiceLocator Instance { get; private set; }
     
+    [SerializeField] private LevelController _levelController;
     [SerializeField] private InputManager _inputManager;
     [SerializeField] private CameraController _cameraController;
     [SerializeField] private UIController _uiController;

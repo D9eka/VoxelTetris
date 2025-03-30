@@ -23,7 +23,7 @@ public class FiguresController : MonoBehaviour
         GridModel gridModel = ServiceLocator.Instance.GridController.Model;
         Vector3Int spawnPosition = Vector3Int.RoundToInt(
             new Vector3(gridModel.Width / 2f, gridModel.Height - _data.SpawnOffsetY, gridModel.Depth / 2f));
-        _figureSpawner = new FigureSpawner(_data.FigurePrefabs, spawnPosition, transform, _data.FigureColors);
+        _figureSpawner = new FigureSpawner(_data.FigurePrefabs, spawnPosition, ServiceLocator.Instance.GridController.transform, _data.FigureColors);
         
         ServiceLocator.Instance.GridController.OnReachLimit += OnReachLimit;
     }
@@ -126,16 +126,10 @@ public class FiguresController : MonoBehaviour
         }
     }
 
-    public void Reload()
+    public void Clear()
     {
-        foreach (FigureController figure in GetComponentsInChildren<FigureController>())
-        {
-            Destroy(figure.gameObject);
-        }
-        ServiceLocator.Instance.GridController.ClearPlanes();
         _figuresToMove = new List<FigureController>();
         _activeFigure = null;
-        _active = true;
     }
 
     private void OnReachLimit()

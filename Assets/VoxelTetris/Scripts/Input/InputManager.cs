@@ -6,6 +6,16 @@ public class InputManager : MonoBehaviour
     private InputActions _inputActions;
 
     public Action<float> OnRotateCamera;
+
+    public void EnableInput()
+    {
+        _inputActions.Player.Enable();
+    }
+
+    public void DisableInput()
+    {
+        _inputActions.Player.Disable();
+    }
     
     private void Awake()
     {
@@ -24,19 +34,7 @@ public class InputManager : MonoBehaviour
             => ServiceLocator.Instance.FiguresController.Rotate(new Vector3(0, 0, 1));
         _inputActions.Player.RotateCamera.performed += (UnityEngine.InputSystem.InputAction.CallbackContext context)
             => OnRotateCamera?.Invoke(context.ReadValue<float>());
-        
-        _inputActions.Player.Enable();
     }
-
-
-
-
-
-
-
-
-
-
 
     /*
     public Action PlayerMoveFigure;

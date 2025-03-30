@@ -70,6 +70,10 @@ public class GridController : MonoBehaviour
         {
             gridPlaneModel.Clear();
         }
+        foreach (FigureController figure in GetComponentsInChildren<FigureController>())
+        {
+            Destroy(figure.gameObject);
+        }
     }
 
     private bool IsInGrid(Vector3Int figurePart)
