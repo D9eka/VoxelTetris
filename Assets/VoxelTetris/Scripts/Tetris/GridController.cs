@@ -82,6 +82,44 @@ public class GridController : MonoBehaviour
                figurePart.y >= 0 && figurePart.y < Model.Height &&
                figurePart.z >= 0 && figurePart.z < Model.Depth;
     }
+    
+    public bool CanPlaceFigureAtPositions(FigureModel figureModel, List<Vector3Int> newPositions)
+    {
+        for (int i = 0; i < newPositions.Count; i++)
+        {
+            Vector3Int newPos = newPositions[i];
+            // Проверяем, находится ли позиция в пределах сетки
+            if (!IsInGrid(newPos))
+            {
+                return false;
+            }
+            // Проверяем, свободна ли ячейка или занята частью другой фигуры
+            FigurePartModel partAtNewPos = Model.GetPart(newPos);
+            if (partAtNewPos != null && partAtNewPos.Parent != figureModel.Controller)
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    public void UpdateFigurePositions(FigureModel figureModel, List<Vector3Int> oldPositions, List<Vector3Int> newPositions)
+    {
+        // Удаляем старые позиции из сетки
+        for (int i = 0; i < oldPositions.Count; i++)
+        {
+            Vector3Int oldPos = oldPositions[i];
+            Model.Grid[oldPos.y].Remove(new Vector2Int(oldPos.x, oldPos.z));
+        }
+        // Добавляем новые позиции в сетку
+        for (int i = 0; i < newPositions.Count; i++)
+        {
+            Vector3Int newPos = newPositions[i];
+            FigurePartModel part = figureModel.Parts[i];
+            Model.Grid[newPos.y].Add(part, new Vector2Int(newPos.x, newPos.z));
+            part.SetPosition(newPos);
+        }
+    }
 
     private bool TryMoveFigurePart(FigurePartModel figurePartModel, Vector3Int directionInt)
     {

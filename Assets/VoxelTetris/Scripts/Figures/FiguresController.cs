@@ -101,13 +101,30 @@ public class FiguresController : MonoBehaviour
         Quaternion rotation = Quaternion.Euler(axis * 90f);
         Vector3 centerPosition = _activeFigure.Model.Center.Position;
 
-        for (int i = 0; i < _activeFigure.Model.Parts.Count; i++)
+        List<Vector3Int> newPositions = new List<Vector3Int>();
+        foreach (FigurePartModel part in _activeFigure.Model.Parts)
         {
-            Vector3 relativePosition = _activeFigure.Model.Parts[i].Position - centerPosition;
+            Vector3 relativePosition = part.Position - centerPosition;
             Vector3 rotatedPosition = rotation * relativePosition;
             Vector3Int newPosition = Vector3Int.RoundToInt(rotatedPosition + centerPosition);
+            newPositions.Add(newPosition);
+        }
 
-            TryMove(_activeFigure, newPosition);
+        GridController gridController = ServiceLocator.Instance.GridController;
+        if (gridController.CanPlaceFigureAtPositions(_activeFigure.Model, newPositions))
+        {
+            List<Vector3Int> oldPositions = new List<Vector3Int>();
+            foreach (FigurePartModel part in _activeFigure.Model.Parts)
+            {
+                oldPositions.Add(part.Position);
+            }
+
+            gridController.UpdateFigurePositions(_activeFigure.Model, oldPositions, newPositions);
+
+            foreach (FigurePartController partController in _activeFigure.Parts)
+            {
+                partController.transform.position = partController.Model.Position;
+            }
         }
     }
 

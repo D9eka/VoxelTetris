@@ -29,6 +29,11 @@ public class GridPlaneModel
 
     public void Remove(Vector2Int position)
     {
+        FigurePartModel partToDelete = Plane[position.x, position.y];
+        if (partToDelete == null)
+        {
+            return;
+        }
         FigureController figurePartParent = Plane[position.x, position.y].Parent;
         Figures.Remove(figurePartParent);
         if (LastFigure == figurePartParent)
