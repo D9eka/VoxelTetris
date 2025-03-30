@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 8160584270229513922}
   - component: {fileID: 6763594015754271149}
   m_Layer: 5
-  m_Name: Button
+  m_Name: ButtonLight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -67,8 +67,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: f33617cdafc003d489c666551d6a3bda, type: 3}
-  m_Type: 1
+  m_Sprite: {fileID: 21300000, guid: 4fdac6a32afdf594f8ce64255ee76761, type: 3}
+  m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
