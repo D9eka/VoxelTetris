@@ -1,9 +1,9 @@
-using System;
 using UnityEngine;
 
 public class UIController : MonoBehaviour
 {
     [SerializeField] private GameObject _startScreen;
+    [SerializeField] private GameObject _statisticsScreen;
     [SerializeField] private GameObject _settingsScreen;
     [SerializeField] private GameObject _reloadScreen;
 
@@ -23,6 +23,7 @@ public class UIController : MonoBehaviour
     public void HideAllScreens()
     {
         _startScreen.SetActive(false);
+        _statisticsScreen.SetActive(false);
         _settingsScreen.SetActive(false);
         _reloadScreen.SetActive(false);
     }
