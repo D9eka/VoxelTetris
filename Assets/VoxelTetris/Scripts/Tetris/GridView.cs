@@ -1,11 +1,16 @@
 using System;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class GridView : MonoBehaviour
 {
     public Vector3 Center { get; private set; }
 
-    [SerializeField] private GameObject _gridBlockPrefab;
+    [SerializeField] private GameObject _gridXLinePrefab;
+    [SerializeField] private GameObject _gridYLinePrefab;
+    [SerializeField] private GameObject _gridZLinePrefab;
+    [SerializeField] private GameObject _gridCornerPrefab;
+    [SerializeField] private GameObject _gridPlatformBlock;
     [SerializeField] private GridWall _initialWallToHide;
 
     private GameObject _platform;
@@ -22,10 +27,12 @@ public class GridView : MonoBehaviour
     
     private GridWall _hiddenWall;
 
+    private float _offset;
+
     private void Start()
     {
         _hiddenWall = _initialWallToHide;
-        HideWall(_hiddenWall);
+        //HideWall(_hiddenWall);
         
         ServiceLocator.Instance.InputManager.OnRotateCamera += OnRotateCamera;
     }
@@ -37,23 +44,23 @@ public class GridView : MonoBehaviour
         Center = new Vector3(width / 2f, height / 2f, depth / 2f);
         int platformYPos = -1;
 
-        GeneratePlatform(platformYPos, width, depth);
+        _offset = 0.45f;
+        
+        GenerateXWall(platformYPos, -1, height, depth, _offset, _leftWall.transform);
+        GenerateXWall(platformYPos, width, height, depth, -_offset, _rightWall.transform);
+        
+        GenerateZWall(platformYPos, -1, width, height, _offset, _backWall.transform);
+        GenerateZWall(platformYPos, depth, width, height, -_offset, _frontWall.transform);
 
-        GenerateXWall(platformYPos, -1, height, depth, _leftWall.transform);
-        GenerateXWall(platformYPos, width, height, depth, _rightWall.transform);
-
-        GenerateZWall(platformYPos, -1, width, height, _backWall.transform);
-        GenerateZWall(platformYPos, depth, width, height, _frontWall.transform);
-
-        GenerateCorner(platformYPos, -1, height, -1, _leftDownCorner.transform);
-        GenerateCorner(platformYPos, -1, height, depth, _leftUpCorner.transform);
-        GenerateCorner(platformYPos, width, height, -1, _rightDownCorner.transform);
-        GenerateCorner(platformYPos, width, height, depth, _rightUpCorner.transform);
+        GenerateCorner(platformYPos, -1, height, -1, 0, new Vector3(_offset, 0, _offset), _leftDownCorner.transform);
+        GenerateCorner(platformYPos, -1, height, depth, 90, new Vector3(_offset, 0, -_offset), _leftUpCorner.transform);
+        GenerateCorner(platformYPos, width, height, -1, 270, new Vector3(-_offset, 0, _offset), _rightDownCorner.transform);
+        GenerateCorner(platformYPos, width, height, depth, 180, new Vector3(-_offset, 0, -_offset), _rightUpCorner.transform);
     }
 
     public void HideWall(GridWall wall)
     {
-        ChangeWallActiveState(wall, false);
+        //ChangeWallActiveState(wall, false);
     }
 
     private void SpawnBlockParents()
@@ -78,50 +85,47 @@ public class GridView : MonoBehaviour
         return go;
     }
 
-    private void GeneratePlatform(int y, int width, int depth)
+    private void GenerateXWall(int platformYPos, int x, int height, int depth, float offset, Transform parent)
+    {
+        for (int z = 0; z < depth; z++)
+        {
+            InstantiateBlock(_gridZLinePrefab, new Vector3(x + offset, height - 1 + Math.Abs(offset), z), Quaternion.identity, parent);
+            InstantiateBlock(_gridZLinePrefab, new Vector3(x + offset, platformYPos + Math.Abs(offset), z), Quaternion.identity, parent);
+        }
+    }
+
+    private void GenerateZWall(int platformYPos, int z, int width, int height, float offset, Transform parent)
     {
         for (int x = 0; x < width; x++)
         {
-            for (int z = 0; z < depth; z++)
+            InstantiateBlock(_gridXLinePrefab, new Vector3(x, height - 1 + Math.Abs(offset), z+offset), Quaternion.identity, parent);
+            InstantiateBlock(_gridXLinePrefab, new Vector3(x, platformYPos + Math.Abs(offset), z+offset), Quaternion.identity, parent);
+        }
+    }
+
+    private void GenerateCorner(int platformYPos, int x, int height, int z, float angleY, Vector3 offset, Transform parent)
+    {
+        for (int y = height; y >= platformYPos; y--)
+        {
+            if (y == height)
             {
-                InstantiateBlock(new Vector3(x, y, z), _platform.transform);
+                InstantiateBlock(_gridCornerPrefab, new Vector3(x, y - (1 - _offset), z) + offset, Quaternion.Euler(0, angleY, 0), parent);
+            }
+            else if (y == platformYPos)
+            {
+                InstantiateBlock(_gridCornerPrefab, new Vector3(x, y + (1 - _offset) - 0.1f, z) + offset, Quaternion.Euler(0, angleY, 0), parent);
+            }
+            else
+            {
+                InstantiateBlock(_gridYLinePrefab, new Vector3(x, y, z) + offset, Quaternion.identity, parent);
             }
         }
     }
 
-    private void GenerateXWall(int platformYPos, int x, int height, int depth, Transform parent)
+    private void InstantiateBlock(
+        GameObject block, Vector3 position, Quaternion rotation, Transform parent)
     {
-        for (int y = height - 1; y >= platformYPos; y--)
-        {
-            for (int z = 0; z < depth; z++)
-            {
-                InstantiateBlock(new Vector3(x, y, z), parent);
-            }
-        } 
-    }
-
-    private void GenerateZWall(int platformYPos, int z, int width, int height, Transform parent)
-    {
-        for (int y = height - 1; y >= platformYPos; y--)
-        {
-            for (int x = 0; x < width; x++)
-            {
-                InstantiateBlock(new Vector3(x, y, z), parent);
-            }
-        }
-    }
-
-    private void GenerateCorner(int platformYPos, int x, int height, int z, Transform parent)
-    {
-        for (int y = height - 1; y >= platformYPos; y--)
-        {
-            InstantiateBlock(new Vector3(x, y, z), parent);
-        }
-    }
-
-    private void InstantiateBlock(Vector3 position, Transform parent)
-    {
-        Instantiate(_gridBlockPrefab, position, Quaternion.identity, parent);
+        Instantiate(block, position, rotation, parent);
     }
 
     private void ChangeWallActiveState(GridWall wall, bool state)
@@ -155,9 +159,11 @@ public class GridView : MonoBehaviour
 
     private void OnRotateCamera(float direction)
     {
+        /*
         ChangeWallActiveState(_hiddenWall, true);
         _hiddenWall = NextWall(_hiddenWall, Mathf.RoundToInt(direction));
         ChangeWallActiveState(_hiddenWall, false);
+        */
     }
     
     private GridWall NextWall(GridWall currentWall, int direction)
