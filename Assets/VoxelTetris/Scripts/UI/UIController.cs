@@ -75,7 +75,7 @@ public class UIController : MonoBehaviour
 
     private void OnReachLimit()
     {
-        SetScreen(_reloadScreen);
+        SetScreenForce(_reloadScreen);
     }
     
     private void OnStartGame()

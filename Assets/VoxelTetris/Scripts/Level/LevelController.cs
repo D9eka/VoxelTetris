@@ -7,17 +7,28 @@ public class LevelController : MonoBehaviour
     public Action PlayerPause;
     public Action UIResume;
     public Action EndGame;
+
+    private bool _gameStarted;
     
     private void Start()
     {
+        ServiceLocator.Instance.GridController.OnReachLimit += OnReachLimit;
+        
         ServiceLocator.Instance.InputManager.PlayerPause += OnPlayerPause;
         ServiceLocator.Instance.InputManager.UIResume += OnUIResume;
     }
 
     private void OnDisable()
     {
+        ServiceLocator.Instance.GridController.OnReachLimit -= OnReachLimit;
+        
         ServiceLocator.Instance.InputManager.PlayerPause -= OnPlayerPause;
         ServiceLocator.Instance.InputManager.UIResume -= OnUIResume;
+    }
+
+    private void OnReachLimit()
+    {
+        _gameStarted = false;
     }
 
     private void OnPlayerPause()
@@ -30,7 +41,7 @@ public class LevelController : MonoBehaviour
         }
         
         FiguresController figuresController = ServiceLocator.Instance.FiguresController;
-        if (!figuresController.Active)
+        if (!_gameStarted || !figuresController.Active)
         {
             return;
         }
@@ -47,11 +58,18 @@ public class LevelController : MonoBehaviour
             return;
         }
         
+        FiguresController figuresController = ServiceLocator.Instance.FiguresController;
+        if (!_gameStarted || figuresController.Active)
+        {
+            return;
+        }
+        
         UIResume?.Invoke();
     }
 
     public void ProcessStartGame()
     {
+        _gameStarted = true;
         StartGame?.Invoke();
     }
 
@@ -67,6 +85,7 @@ public class LevelController : MonoBehaviour
 
     public void ProcessEndGame()
     {
+        _gameStarted = false;
         EndGame?.Invoke();
     }
 

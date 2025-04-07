@@ -218,8 +218,7 @@ public class FiguresController : MonoBehaviour
 
     private void OnReachLimit()
     {
-        Active = false;
-        _activeFigure = null;
+        StopSpawning();
         Debug.Log("Reach Limit");
     }
 
@@ -252,6 +251,11 @@ public class FiguresController : MonoBehaviour
     
     private bool TryMove(FigureController figure, Vector3Int directionInt)
     {
+        if (figure == null)
+        {
+            return false;
+        }
+        
         if (ServiceLocator.Instance.GridController.TryMoveFigure(figure.Model, directionInt))
         {
             figure.Move(directionInt);

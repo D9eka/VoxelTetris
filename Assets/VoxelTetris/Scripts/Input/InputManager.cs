@@ -47,6 +47,8 @@ public class InputManager : MonoBehaviour
     {
         DisablePlayerInput();
         
+        ServiceLocator.Instance.GridController.OnReachLimit += OnReachLimit;
+        
         ServiceLocator.Instance.LevelController.StartGame += OnStartGame;
         ServiceLocator.Instance.LevelController.PlayerPause += OnPlayerPause;
         ServiceLocator.Instance.LevelController.UIResume += OnUIResume;
@@ -55,6 +57,7 @@ public class InputManager : MonoBehaviour
 
     private void OnDisable()
     {
+        ServiceLocator.Instance.GridController.OnReachLimit -= OnReachLimit;
 
         _inputActions.Player.MoveFigure.performed -= OnMoveFigurePerformed;
         _inputActions.Player.DropFigure.performed -= OnDropFigurePerformed;
@@ -111,6 +114,11 @@ public class InputManager : MonoBehaviour
     private void OnUIResumePerformed(InputAction.CallbackContext context)
     {
         UIResume?.Invoke();
+    }
+
+    private void OnReachLimit()
+    {
+        DisablePlayerInput();
     }
 
     private void OnStartGame()
