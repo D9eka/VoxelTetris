@@ -22,6 +22,16 @@ public class GridController : MonoBehaviour
         _view.GenerateGrid(_grid.x, _limitY, _grid.z);
     }
 
+    private void Start()
+    {
+        ServiceLocator.Instance.LevelController.EndGame += OnEndGame;
+    }
+
+    private void OnDisable()
+    {
+        ServiceLocator.Instance.LevelController.EndGame -= OnEndGame;
+    }
+
     [ContextMenu("PrintModel")]
     public void PrintModel()
     {
@@ -64,7 +74,7 @@ public class GridController : MonoBehaviour
         return true;
     }
 
-    public void ClearPlanes()
+    private void ClearPlanes()
     {
         foreach (GridPlaneModel gridPlaneModel in Model.Grid)
         {
@@ -120,6 +130,11 @@ public class GridController : MonoBehaviour
             part.SetPosition(newPos);
         }
     }
+    
+    private void OnEndGame()
+    {
+        ClearPlanes();
+    }
 
     private bool TryMoveFigurePart(FigurePartModel figurePartModel, Vector3Int directionInt)
     {
@@ -145,6 +160,7 @@ public class GridController : MonoBehaviour
         {
             if (Model.Grid[i].IsFull())
             {
+                Debug.Log($"CLEAR PLANE: {i}");
                 OnClearPlane?.Invoke(Model.Grid[i].LastFigure);
                 figuresController.RemoveFiguresPartAtPlane(Model.Grid[i].Figures, i);
                 Model.Grid[i].Clear();

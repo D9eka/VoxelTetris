@@ -1,8 +1,11 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class FiguresController : MonoBehaviour
 {
+    public bool Active { get; private set; }
+    
     [SerializeField] private FiguresControllerData _data;
     
     private FigureSpawner _figureSpawner;
@@ -11,7 +14,6 @@ public class FiguresController : MonoBehaviour
     private FigureController _activeFigure;
 
     private float _timeFromLastMove;
-    private bool _active;
 
     private void Awake()
     {
@@ -30,7 +32,13 @@ public class FiguresController : MonoBehaviour
         ServiceLocator.Instance.InputManager.PlayerMoveFigure += OnPlayerMoveFigure;
         ServiceLocator.Instance.InputManager.PlayerRotateFigure += OnPlayerRotateFigure;
         ServiceLocator.Instance.InputManager.PlayerDropFigure += OnPlayerDropFigure;
+        
+        ServiceLocator.Instance.LevelController.StartGame += OnStartGame;
+        ServiceLocator.Instance.LevelController.PlayerPause += OnPlayerPause;
+        ServiceLocator.Instance.LevelController.UIResume += OnUIResume;
+        ServiceLocator.Instance.LevelController.EndGame += OnEndGame;
     }
+
     private void OnDisable()
     {
         ServiceLocator.Instance.GridController.OnReachLimit -= OnReachLimit;
@@ -38,11 +46,16 @@ public class FiguresController : MonoBehaviour
         ServiceLocator.Instance.InputManager.PlayerMoveFigure -= OnPlayerMoveFigure;
         ServiceLocator.Instance.InputManager.PlayerRotateFigure -= OnPlayerRotateFigure;
         ServiceLocator.Instance.InputManager.PlayerDropFigure -= OnPlayerDropFigure;
+        
+        ServiceLocator.Instance.LevelController.StartGame -= OnStartGame;
+        ServiceLocator.Instance.LevelController.PlayerPause -= OnPlayerPause;
+        ServiceLocator.Instance.LevelController.UIResume -= OnUIResume;
+        ServiceLocator.Instance.LevelController.EndGame -= OnEndGame;
     }
 
     private void Update()
     {
-        if (!_active)
+        if (!Active)
         {
             return;
         }
@@ -59,7 +72,19 @@ public class FiguresController : MonoBehaviour
     [ContextMenu("StartSpawning")]
     public void StartSpawning()
     {
-        _active = true;
+        Active = true;
+    }
+    
+    [ContextMenu("StopSpawning")]
+    public void StopSpawning()
+    {
+        Active = false;
+    }
+
+    public void Clear()
+    {
+        _figuresToMove = new List<FigureController>();
+        _activeFigure = null;
     }
 
     public void AddFigures(IEnumerable<FigureController> figures)
@@ -193,7 +218,7 @@ public class FiguresController : MonoBehaviour
 
     private void OnReachLimit()
     {
-        _active = false;
+        Active = false;
         _activeFigure = null;
         Debug.Log("Reach Limit");
     }
