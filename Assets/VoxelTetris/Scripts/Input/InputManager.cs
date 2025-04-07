@@ -1,54 +1,137 @@
 using System;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class InputManager : MonoBehaviour
 {
     private InputActions _inputActions;
+    
+    public Action<Vector2> PlayerMoveFigure;
+    public Action<Vector3> PlayerRotateFigure;
+    public Action PlayerDropFigure;
 
-    public Action<float> OnRotateCamera;
+    public Action<float> PlayerRotateCamera;
+    
+    public Action PlayerPause;
+    public Action UIResume;
 
-    public void EnableInput()
+    public void EnablePlayerInput()
     {
+        _inputActions.UI.Disable();
         _inputActions.Player.Enable();
     }
 
-    public void DisableInput()
+    public void DisablePlayerInput()
     {
         _inputActions.Player.Disable();
+        _inputActions.UI.Enable();
     }
     
     private void Awake()
     {
         _inputActions = new InputActions();
 
-        _inputActions.Player.MoveFigure.performed += (UnityEngine.InputSystem.InputAction.CallbackContext context)
-            => ServiceLocator.Instance.FiguresController.Move(context.ReadValue<Vector2>());
-        _inputActions.Player.DropFigure.performed += (UnityEngine.InputSystem.InputAction.CallbackContext context)
-            => ServiceLocator.Instance.FiguresController.MoveToBottom();
-
-        _inputActions.Player.RotateFigureX.performed += (UnityEngine.InputSystem.InputAction.CallbackContext context)
-            => ServiceLocator.Instance.FiguresController.Rotate(new Vector3(1, 0, 0));
-        _inputActions.Player.RotateFigureY.performed += (UnityEngine.InputSystem.InputAction.CallbackContext context)
-            => ServiceLocator.Instance.FiguresController.Rotate(new Vector3(0, 1, 0));
-        _inputActions.Player.RotateFigureZ.performed += (UnityEngine.InputSystem.InputAction.CallbackContext context)
-            => ServiceLocator.Instance.FiguresController.Rotate(new Vector3(0, 0, 1));
-        _inputActions.Player.RotateCamera.performed += (UnityEngine.InputSystem.InputAction.CallbackContext context)
-            => OnRotateCamera?.Invoke(context.ReadValue<float>());
+        _inputActions.Player.MoveFigure.performed += OnMoveFigurePerformed;
+        _inputActions.Player.DropFigure.performed += OnDropFigurePerformed;
+        _inputActions.Player.RotateFigureX.performed += OnRotateFigureXPerformed;
+        _inputActions.Player.RotateFigureY.performed += OnRotateFigureYPerformed;
+        _inputActions.Player.RotateFigureZ.performed += OnRotateFigureZPerformed;
+        
+        _inputActions.Player.RotateCamera.performed += OnPlayerRotateCameraPerformed;
+        
+        _inputActions.Player.Pause.performed += OnPausePerformed;
+        _inputActions.UI.Resume.performed += OnUIResumePerformed;
     }
 
-    /*
-    public Action PlayerMoveFigure;
-    public Action PlayerRotateFigureX;
-    public Action PlayerRotateFigureY;
-    public Action PlayerRotateFigureZ;
-    public Action PlayerDropFigure;
+    private void Start()
+    {
+        DisablePlayerInput();
+        
+        ServiceLocator.Instance.LevelController.StartGame += OnStartGame;
+        ServiceLocator.Instance.LevelController.PlayerPause += OnPlayerPause;
+        ServiceLocator.Instance.LevelController.UIResume += OnUIResume;
+        ServiceLocator.Instance.LevelController.EndGame += OnEndGame;
+    }
 
-    public Action PlayerRotateCamera;
-    public Action PlayerZoomCamera;
+    private void OnDisable()
+    {
 
-    public Action PlayerPause;
+        _inputActions.Player.MoveFigure.performed -= OnMoveFigurePerformed;
+        _inputActions.Player.DropFigure.performed -= OnDropFigurePerformed;
+        _inputActions.Player.RotateFigureX.performed -= OnRotateFigureXPerformed;
+        _inputActions.Player.RotateFigureY.performed -= OnRotateFigureYPerformed;
+        _inputActions.Player.RotateFigureZ.performed -= OnRotateFigureZPerformed;
+        
+        _inputActions.Player.RotateCamera.performed -= OnPlayerRotateCameraPerformed;
+        
+        _inputActions.Player.Pause.performed -= OnPausePerformed;
+        _inputActions.UI.Resume.performed -= OnUIResumePerformed;
+        
+        ServiceLocator.Instance.LevelController.StartGame -= OnStartGame;
+        ServiceLocator.Instance.LevelController.PlayerPause -= OnPlayerPause;
+        ServiceLocator.Instance.LevelController.UIResume -= OnUIResume;
+        ServiceLocator.Instance.LevelController.EndGame -= OnEndGame;
+    }
 
-    public Action UIInteract;
-    public Action UIResume;
-    */
+    private void OnMoveFigurePerformed(InputAction.CallbackContext context)
+    {
+        PlayerMoveFigure?.Invoke(context.ReadValue<Vector2>());
+    }
+
+    private void OnDropFigurePerformed(InputAction.CallbackContext context)
+    {
+        PlayerDropFigure?.Invoke();
+    }
+
+    private void OnRotateFigureXPerformed(InputAction.CallbackContext context)
+    {
+        PlayerRotateFigure?.Invoke(new Vector3(1, 0, 0));
+    }
+
+    private void OnRotateFigureYPerformed(InputAction.CallbackContext context)
+    {
+        PlayerRotateFigure?.Invoke(new Vector3(0, 1, 0));
+    }
+
+    private void OnRotateFigureZPerformed(InputAction.CallbackContext context)
+    {
+        PlayerRotateFigure?.Invoke(new Vector3(0, 0, 1));
+    }
+
+    private void OnPlayerRotateCameraPerformed(InputAction.CallbackContext context)
+    {
+        PlayerRotateCamera.Invoke(context.ReadValue<float>());
+    }
+
+    private void OnPausePerformed(InputAction.CallbackContext context)
+    {
+        PlayerPause?.Invoke();
+    }
+
+    private void OnUIResumePerformed(InputAction.CallbackContext context)
+    {
+        UIResume?.Invoke();
+    }
+
+    private void OnStartGame()
+    {
+        EnablePlayerInput();
+    }
+
+    private void OnPlayerPause()
+    {
+        DisablePlayerInput();
+        _inputActions.UI.Enable();
+    }
+
+    private void OnUIResume()
+    {
+        _inputActions.UI.Disable();
+        EnablePlayerInput();
+    }
+
+    private void OnEndGame()
+    {
+        DisablePlayerInput();
+    }
 }

@@ -36,13 +36,18 @@ public class CameraController : MonoBehaviour
         _gridHeight = gridModel.Height;
         _gridDepth = gridModel.Depth;
 
-        ServiceLocator.Instance.InputManager.OnRotateCamera += OnRotateCamera;
+        ServiceLocator.Instance.InputManager.PlayerRotateCamera += OnRotateCamera;
     }
 
     private void Update()
     {
         _currentAngle = Mathf.LerpAngle(_currentAngle, _targetAngle, Time.deltaTime * _data.RotationSpeed);
         UpdateCameraPosition();
+    }
+
+    private void OnDisable()
+    {
+        ServiceLocator.Instance.InputManager.PlayerRotateCamera -= OnRotateCamera;
     }
 
     private void OnRotateCamera(float direction)

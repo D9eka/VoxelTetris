@@ -26,6 +26,18 @@ public class FiguresController : MonoBehaviour
         _figureSpawner = new FigureSpawner(_data.FigurePrefabs, spawnPosition, ServiceLocator.Instance.GridController.transform, _data.FigureColors);
         
         ServiceLocator.Instance.GridController.OnReachLimit += OnReachLimit;
+        
+        ServiceLocator.Instance.InputManager.PlayerMoveFigure += OnPlayerMoveFigure;
+        ServiceLocator.Instance.InputManager.PlayerRotateFigure += OnPlayerRotateFigure;
+        ServiceLocator.Instance.InputManager.PlayerDropFigure += OnPlayerDropFigure;
+    }
+    private void OnDisable()
+    {
+        ServiceLocator.Instance.GridController.OnReachLimit -= OnReachLimit;
+        
+        ServiceLocator.Instance.InputManager.PlayerMoveFigure -= OnPlayerMoveFigure;
+        ServiceLocator.Instance.InputManager.PlayerRotateFigure -= OnPlayerRotateFigure;
+        ServiceLocator.Instance.InputManager.PlayerDropFigure -= OnPlayerDropFigure;
     }
 
     private void Update()
@@ -142,11 +154,41 @@ public class FiguresController : MonoBehaviour
             }
         }
     }
-
-    public void Clear()
+    
+    private void OnPlayerMoveFigure(Vector2 input)
     {
-        _figuresToMove = new List<FigureController>();
-        _activeFigure = null;
+        Move(input);
+    }
+
+    private void OnPlayerRotateFigure(Vector3 axis)
+    {
+        Rotate(axis);
+    }
+
+    private void OnPlayerDropFigure()
+    {
+        MoveToBottom();
+    }
+
+    private void OnStartGame()
+    {
+        StartSpawning();
+    }
+
+    private void OnPlayerPause()
+    {
+        StopSpawning();
+    }
+
+    private void OnUIResume()
+    {
+        StartSpawning();
+    }
+
+    private void OnEndGame()
+    {
+        StopSpawning();
+        Clear();
     }
 
     private void OnReachLimit()
