@@ -13,11 +13,13 @@ public class FiguresController : MonoBehaviour
     private List<FigureController> _figuresToMove;
     private FigureController _activeFigure;
 
+    private float _timeToDropFigure;
     private float _timeFromLastMove;
 
     private void Awake()
     {
         _figuresToMove = new();
+        _timeToDropFigure = _data.TimeToDropFigure;
     }
 
     private void Start()
@@ -26,6 +28,9 @@ public class FiguresController : MonoBehaviour
         Vector3Int spawnPosition = Vector3Int.RoundToInt(
             new Vector3(gridModel.Width / 2f, gridModel.Height - _data.SpawnOffsetY, gridModel.Depth / 2f));
         _figureSpawner = new FigureSpawner(_data.FigurePrefabs, spawnPosition, ServiceLocator.Instance.GridController.transform, _data.FigureColors);
+        
+        ServiceLocator.Instance.AbilityManager.OnStartSlowDropAbility += OnStartSlowDropAbility;
+        ServiceLocator.Instance.AbilityManager.OnEndSlowDropAbility += OnEndSlowDropAbility;
         
         ServiceLocator.Instance.GridController.OnReachLimit += OnReachLimit;
         
@@ -41,6 +46,9 @@ public class FiguresController : MonoBehaviour
 
     private void OnDisable()
     {
+        ServiceLocator.Instance.AbilityManager.OnStartSlowDropAbility -= OnStartSlowDropAbility;
+        ServiceLocator.Instance.AbilityManager.OnEndSlowDropAbility -= OnEndSlowDropAbility;
+        
         ServiceLocator.Instance.GridController.OnReachLimit -= OnReachLimit;
         
         ServiceLocator.Instance.InputManager.PlayerMoveFigure -= OnPlayerMoveFigure;
@@ -179,6 +187,16 @@ public class FiguresController : MonoBehaviour
             }
         }
     }
+
+    private void OnStartSlowDropAbility(float timeModifier)
+    {
+        _timeToDropFigure *= timeModifier;
+    }
+
+    private void OnEndSlowDropAbility()
+    {
+        _timeToDropFigure = _data.TimeToDropFigure;
+    }
     
     private void OnPlayerMoveFigure(Vector2 input)
     {
@@ -224,7 +242,7 @@ public class FiguresController : MonoBehaviour
 
     private void MoveFigures()
     {
-        if (_timeFromLastMove < _data.TimeToDropFigure)
+        if (_timeFromLastMove < _timeToDropFigure)
         {
             _timeFromLastMove += Time.deltaTime;
             return;

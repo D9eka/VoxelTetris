@@ -24,11 +24,15 @@ public class GridController : MonoBehaviour
 
     private void Start()
     {
+        ServiceLocator.Instance.AbilityManager.OnDeletePlaneAbility += DeletePlaneAbility;
+        
         ServiceLocator.Instance.LevelController.EndGame += OnEndGame;
     }
 
     private void OnDisable()
     {
+        ServiceLocator.Instance.AbilityManager.OnDeletePlaneAbility -= DeletePlaneAbility;
+
         ServiceLocator.Instance.LevelController.EndGame -= OnEndGame;
     }
 
@@ -72,6 +76,20 @@ public class GridController : MonoBehaviour
             TryMoveFigurePart(figureParts[i], directionInt);
         }
         return true;
+    }
+    
+    private void DeletePlaneAbility()
+    {
+        FiguresController figuresController = ServiceLocator.Instance.FiguresController;
+        
+        Debug.Log($"CLEAR PLANE: {0}");
+        figuresController.RemoveFiguresPartAtPlane(Model.Grid[0].Figures, 0);
+        Model.Grid[0].Clear();
+        
+        for (int i = 0; i < Model.Grid.Length; i++)
+        {
+            figuresController.AddFigures(Model.Grid[i].Figures);
+        }
     }
 
     private void ClearPlanes()

@@ -1,0 +1,83 @@
+﻿using System;
+using System.Collections;
+using UnityEngine;
+using UnityEngine.Serialization;
+
+public class AbilityManager : MonoBehaviour
+{
+    [SerializeField] private float _slowDropAbilityTimeModifier = 2f;
+    [SerializeField] private float _slowDropAbilityDuration = 20f;
+    
+    public Action<float> OnStartSlowDropAbility;
+    public Action OnEndSlowDropAbility;
+    public Action OnDeletePlaneAbility;
+
+    private bool _canActivateAbilities;
+
+    private void Start()
+    {
+        ServiceLocator.Instance.UIController.HUDScreen.ActivateSlowDropAbility += ActivateSlowDownAbility;
+        ServiceLocator.Instance.UIController.HUDScreen.ActivateDeletePlaneAbility += ActivateDeletePlaneAbility;
+        
+        ServiceLocator.Instance.LevelController.StartGame += StartGame;
+        ServiceLocator.Instance.LevelController.PlayerPause += PlayerPause;
+        ServiceLocator.Instance.LevelController.UIResume += UIResume;
+        ServiceLocator.Instance.LevelController.EndGame += EndGame;
+    }
+
+    private void OnDisable()
+    {
+        ServiceLocator.Instance.UIController.HUDScreen.ActivateSlowDropAbility -= ActivateSlowDownAbility;
+        ServiceLocator.Instance.UIController.HUDScreen.ActivateDeletePlaneAbility -= ActivateDeletePlaneAbility;
+        
+        ServiceLocator.Instance.LevelController.StartGame -= StartGame;
+        ServiceLocator.Instance.LevelController.PlayerPause -= PlayerPause;
+        ServiceLocator.Instance.LevelController.UIResume -= UIResume;
+        ServiceLocator.Instance.LevelController.EndGame -= EndGame;
+    }
+
+    private void ActivateSlowDownAbility()
+    {
+        if (!_canActivateAbilities)
+        {
+            return;
+        }
+        StartCoroutine(SlowDropAbilityRoutine());
+    }
+
+    private void ActivateDeletePlaneAbility()
+    {
+        if (!_canActivateAbilities)
+        {
+            return;
+        }
+        OnDeletePlaneAbility?.Invoke();
+    }
+
+    private void StartGame()
+    {
+        _canActivateAbilities = true;
+    }
+    
+    private void PlayerPause()
+    {
+        _canActivateAbilities = false;
+    }
+
+    private void UIResume()
+    {
+        _canActivateAbilities = true;
+    }
+
+    private void EndGame()
+    {
+        _canActivateAbilities = false;
+    }
+
+    private IEnumerator SlowDropAbilityRoutine()
+    {
+        OnStartSlowDropAbility?.Invoke(_slowDropAbilityTimeModifier);
+        yield return new WaitForSeconds(_slowDropAbilityDuration);
+        OnEndSlowDropAbility?.Invoke();
+    }
+}
