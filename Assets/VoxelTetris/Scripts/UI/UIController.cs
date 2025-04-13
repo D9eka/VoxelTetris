@@ -3,9 +3,13 @@ using UnityEngine;
 
 public class UIController : MonoBehaviour
 {
+    public StatisticsScreen StatisticsScreen => _statisticsScreen.GetComponent<StatisticsScreen>();
+    public HUDScreen HUDScreen => _hudScreen.GetComponent<HUDScreen>();
+    
     [SerializeField] private GameObject _startScreen;
     [SerializeField] private GameObject _statisticsScreen;
     [SerializeField] private GameObject _settingsScreen;
+    [SerializeField] private GameObject _hudScreen;
     [SerializeField] private GameObject _pauseScreen;
     [SerializeField] private GameObject _reloadScreen;
     [SerializeField] private GameObject _confirmExitScreen;
@@ -80,17 +84,20 @@ public class UIController : MonoBehaviour
     
     private void OnStartGame()
     {
-        CloseCurrentScreen();
+        SetScreenForce(_hudScreen);
     }
     
     private void OnPause()
     {
-        SetScreen(_pauseScreen);
+        if (_screenStack.Peek() == _hudScreen)
+        {
+            SetScreen(_pauseScreen);
+        }
     }
 
     private void OnResume()
     {
-        CloseCurrentScreen();
+        SetScreenForce(_hudScreen);
     }
 
     private void EndGame()

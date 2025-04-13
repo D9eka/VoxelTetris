@@ -75,12 +75,18 @@ public class LevelController : MonoBehaviour
 
     public void ProcessPlayerPause()
     {
-        PlayerPause?.Invoke();
+        if (_gameStarted)
+        {
+            PlayerPause?.Invoke();
+        }
     }
 
     public void ProcessUIResume()
     {
-        UIResume?.Invoke();
+        if (_gameStarted)
+        {
+            UIResume?.Invoke();
+        }
     }
 
     public void ProcessEndGame()
