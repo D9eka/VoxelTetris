@@ -29,7 +29,7 @@ public class FigureController : MonoBehaviour
     public void DeleteFigurePart(FigurePartController figurePart)
     {
         Model.Parts.Remove(figurePart.Model);
-        Destroy(figurePart);
+        Destroy(figurePart.gameObject);
     }
 
     private void CreateModel()

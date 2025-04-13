@@ -170,7 +170,7 @@ public class FiguresController : MonoBehaviour
         foreach (FigureController figure in figures)
         {
             List<FigurePartModel> figureParts = figure.Model.Parts;
-            for (int i = 0; i < figureParts.Count; i++)
+            for (int i = figureParts.Count - 1; i >= 0; i--)
             {
                 if (figureParts[i].Position.y == planePosY)
                 {
