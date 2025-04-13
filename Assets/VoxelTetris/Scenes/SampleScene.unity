@@ -129,6 +129,50 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 2938620352412301179, guid: 35c4ab053d3414947822a0fc33f6c17e, type: 3}
   m_PrefabInstance: {fileID: 5087904054526201416}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &93586135
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 93586137}
+  - component: {fileID: 93586136}
+  m_Layer: 0
+  m_Name: ScoreManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &93586136
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 93586135}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e58dfe30574e4dc48c1c5e7105994856, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &93586137
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 93586135}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 520288302}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &132593365
 GameObject:
   m_ObjectHideFlags: 0
@@ -436,6 +480,7 @@ MonoBehaviour:
   _uiController: {fileID: 1561887858}
   _figuresController: {fileID: 2139376736}
   _gridController: {fileID: 861955131}
+  _scoreManager: {fileID: 93586136}
   _abilityManager: {fileID: 1465527837}
 --- !u!4 &520288302
 Transform:
@@ -453,6 +498,7 @@ Transform:
   - {fileID: 2014299153}
   - {fileID: 1125926950}
   - {fileID: 2139376737}
+  - {fileID: 93586137}
   - {fileID: 1465527838}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -2752,6 +2798,10 @@ PrefabInstance:
     - target: {fileID: 7368442365828741383, guid: 120be4e874f8f2e42811066a19980e04, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 7994113430351590893, guid: 120be4e874f8f2e42811066a19980e04, type: 3}
+      propertyPath: _scoreDeltaDuration
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

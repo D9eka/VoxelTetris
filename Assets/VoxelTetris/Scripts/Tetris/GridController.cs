@@ -12,8 +12,8 @@ public class GridController : MonoBehaviour
     public GridView View => _view;
     public GridModel Model { get; private set; }
 
-    public Action<FigureController> OnPlaceFigure;
-    public Action<FigureController> OnClearPlane;
+    public Action<FigureController, int> OnPlaceFigure;
+    public Action<FigureController, int> OnClearPlane;
     public Action OnReachLimit;
 
     private void Awake()
@@ -56,7 +56,10 @@ public class GridController : MonoBehaviour
             if (!IsInGrid(newPlacePosition))
             {
                 //Debug.Log($"НЕ В ГРИДЕ: {figureParts[i].Position} -> {newPlacePosition}");
-                OnPlaceFigure?.Invoke(figureModel.Parts[0].Parent);
+                if (newPlacePosition.y < 0)
+                {
+                    OnPlaceFigure?.Invoke(figureModel.Parts[0].Parent, 0);
+                }
                 CheckForFullPlanes();
                 return false;
             }
@@ -64,7 +67,7 @@ public class GridController : MonoBehaviour
             if (newPlace != null && newPlace.Parent != figureModel.Parts[0].Parent)
             {
                 //Debug.Log($"НОВАЯ ПОЗИЦИЯ ЗАНЯТА: {newPlacePosition}");
-                OnPlaceFigure?.Invoke(figureModel.Parts[0].Parent);
+                OnPlaceFigure?.Invoke(figureModel.Parts[0].Parent, figureParts[i].Position.y);
                 CheckForFullPlanes();
                 CheckForFiguresInLimit();
                 return false;
@@ -179,7 +182,7 @@ public class GridController : MonoBehaviour
             if (Model.Grid[i].IsFull())
             {
                 Debug.Log($"CLEAR PLANE: {i}");
-                OnClearPlane?.Invoke(Model.Grid[i].LastFigure);
+                OnClearPlane?.Invoke(Model.Grid[i].LastFigure, i);
                 figuresController.RemoveFiguresPartAtPlane(Model.Grid[i].Figures, i);
                 Model.Grid[i].Clear();
                 clearPlane = true;

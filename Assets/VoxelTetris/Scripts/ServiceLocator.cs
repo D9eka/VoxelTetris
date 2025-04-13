@@ -9,6 +9,7 @@ public class ServiceLocator : MonoBehaviour
     public UIController UIController => _uiController;
     public FiguresController FiguresController => _figuresController;
     public GridController GridController => _gridController;
+    public ScoreManager ScoreManager => _scoreManager;
     public AbilityManager AbilityManager => _abilityManager;
     
     public static ServiceLocator Instance { get; private set; }
@@ -21,6 +22,7 @@ public class ServiceLocator : MonoBehaviour
     [SerializeField] private FiguresController _figuresController;
     [SerializeField] private GridController _gridController;
     [Space]
+    [SerializeField] private ScoreManager _scoreManager;
     [SerializeField] private AbilityManager _abilityManager;
 
     private void Awake()

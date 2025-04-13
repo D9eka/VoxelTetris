@@ -1,13 +1,15 @@
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class FigureController : MonoBehaviour
 {
     public FigurePartController[] Parts => GetComponentsInChildren<FigurePartController>();
 
+    public FigureType Type => _type;
     public FigurePartController Center => _center;
-    public FigureModel Model { get; private set; }
+    public FigureModel Model { get; private set; } 
     
+    [SerializeField] private FigureType _type;
     [SerializeField] private FigurePartController _center;
     
     private void Start()
