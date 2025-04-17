@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -24,6 +25,8 @@ public class HUDScreen : MonoBehaviour
     private float prefabWidth;
     private float prefabHeight;
 
+    private List<GameObject> _spawnedScores;
+
     private void Awake()
     {
         Vector2 rectSizes = GetSizes(GetComponent<RectTransform>());
@@ -33,6 +36,8 @@ public class HUDScreen : MonoBehaviour
         Vector2 prefabRectSizes = GetSizes(_scoreDeltaPrefab.GetComponent<RectTransform>());
         prefabWidth = prefabRectSizes.x;
         prefabHeight = prefabRectSizes.y;
+        
+        _spawnedScores = new List<GameObject>();
     }
 
     private Vector2 GetSizes(RectTransform rectTransform)
@@ -41,7 +46,7 @@ public class HUDScreen : MonoBehaviour
         return new Vector2(rect.width, rect.height);
     }
 
-    private void Start()
+    private void OnEnable()
     {
         ServiceLocator.Instance.ScoreManager.OnScoreChanged += OnScoreChanged;
         
@@ -51,6 +56,13 @@ public class HUDScreen : MonoBehaviour
 
     private void OnDisable()
     {
+        StopAllCoroutines();
+        foreach (GameObject spawnedScore in _spawnedScores)
+        {
+            Destroy(spawnedScore);
+        }
+        _spawnedScores.Clear();
+        
         ServiceLocator.Instance.ScoreManager.OnScoreChanged -= OnScoreChanged;
         
         ServiceLocator.Instance.AbilityManager.OnStartSlowDropAbility -= OnStartSlowDropAbility;
@@ -96,7 +108,8 @@ public class HUDScreen : MonoBehaviour
             );
         TextMeshProUGUI scoreDelta = Instantiate(_scoreDeltaPrefab, transform).GetComponent<TextMeshProUGUI>();
         scoreDelta.rectTransform.anchoredPosition3D = spawnPos;
-        scoreDelta.text = "+" + delta.ToString();
+        scoreDelta.text = "+" + delta;
+        _spawnedScores.Add(scoreDelta.gameObject);
         
         float initialTime = Time.time;
         while (Time.time - initialTime < _scoreDeltaDuration)
@@ -105,6 +118,7 @@ public class HUDScreen : MonoBehaviour
             yield return new WaitForEndOfFrame();
         }
         
+        _spawnedScores.Remove(scoreDelta.gameObject);
         Destroy(scoreDelta.gameObject);
     }
 }

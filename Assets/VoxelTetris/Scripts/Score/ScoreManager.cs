@@ -52,27 +52,28 @@ public class ScoreManager : MonoBehaviour
 
     private void OnPlaceFigure(FigureController figure, int planePosY)
     {
-        AddScore(_figurePrice[figure.Type], ScoreType.PlaceFigure, planePosY);
+        Score += GetAdditionalScore(_figurePrice[figure.Type], ScoreType.PlaceFigure, planePosY);
     }
 
     private void OnClearPlane(FigureController figure, int planePosY)
     {
         ScoreType type = ScoreType.DeletePlane;
-        AddScore(_figurePrice[figure.Type] * 2, type, planePosY);
+        int additionalScore = GetAdditionalScore(_figurePrice[figure.Type] * 2, type, planePosY);
 
-        Score += 300;
+        additionalScore += 300;
         if (_previousScoreTypeLength >= 1)
         {
-            Score += 50;
+            additionalScore += 50;
         }
+        Score += additionalScore;
     }
 
-    private void AddScore(int score, ScoreType type, int planePosY)
+    private int GetAdditionalScore(int score, ScoreType type, int planePosY)
     {
-        Score += score;
+        int additionalScore = score;
         if (planePosY >= 4)
         {
-            Score += 30;
+            additionalScore += 30;
         }
         if (_previousScoreType == type)
         {
@@ -83,5 +84,7 @@ public class ScoreManager : MonoBehaviour
             _previousScoreType = type;
             _previousScoreTypeLength = 1;
         }
+
+        return additionalScore;
     }
 }
