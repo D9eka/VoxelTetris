@@ -311,6 +311,39 @@
                     "isPartOfComposite": true
                 },
                 {
+                    "name": "Mouse",
+                    "id": "e4c41b1d-05a3-4bd2-9dc4-a02e7e9c5f79",
+                    "path": "1DAxis",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "RotateCamera",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "negative",
+                    "id": "e164f96d-38dc-4b92-8b7f-dd74c00159f2",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "RotateCamera",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "positive",
+                    "id": "4d00c3c6-ae3b-4c14-8235-6250b2994653",
+                    "path": "<Mouse>/rightButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "RotateCamera",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
                     "name": "Gamepad",
                     "id": "eb2f14ac-379b-4582-8967-a6cbe89ba91e",
                     "path": "1DAxis",

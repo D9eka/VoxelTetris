@@ -5,7 +5,9 @@ public class UIController : MonoBehaviour
 {
     public StatisticsScreen StatisticsScreen => _statisticsScreen.GetComponent<StatisticsScreen>();
     public HUDScreen HUDScreen => _hudScreen.GetComponent<HUDScreen>();
-    
+
+    [SerializeField] private GameObject _uiBlur;
+    [Space]
     [SerializeField] private GameObject _startScreen;
     [SerializeField] private GameObject _statisticsScreen;
     [SerializeField] private GameObject _settingsScreen;
@@ -18,6 +20,8 @@ public class UIController : MonoBehaviour
 
     private void Start()
     {
+        _uiBlur.SetActive(true);
+        
         SetScreen(_startScreen);
         
         ServiceLocator.Instance.GridController.OnReachLimit += OnReachLimit;

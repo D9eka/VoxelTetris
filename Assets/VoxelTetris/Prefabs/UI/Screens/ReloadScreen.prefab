@@ -37,7 +37,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 650, y: 0}
+  m_SizeDelta: {x: 805, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1217782902813213431
 MonoBehaviour:
@@ -57,10 +57,10 @@ MonoBehaviour:
     m_Top: 0
     m_Bottom: 0
   m_ChildAlignment: 4
-  m_Spacing: 95
+  m_Spacing: 48.5
   m_ChildForceExpandWidth: 1
   m_ChildForceExpandHeight: 0
-  m_ChildControlWidth: 0
+  m_ChildControlWidth: 1
   m_ChildControlHeight: 0
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
@@ -93,7 +93,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1478222748911455975, guid: 5d5de6c8d60889b499ccdd7097858c2d, type: 3}
       propertyPath: m_Name
-      value: Button
+      value: ButtonDark (1)
       objectReference: {fileID: 0}
     - target: {fileID: 4144681493356327010, guid: 5d5de6c8d60889b499ccdd7097858c2d, type: 3}
       propertyPath: m_Pivot.x
@@ -121,11 +121,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4144681493356327010, guid: 5d5de6c8d60889b499ccdd7097858c2d, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 650
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4144681493356327010, guid: 5d5de6c8d60889b499ccdd7097858c2d, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 100
+      value: 175.5
       objectReference: {fileID: 0}
     - target: {fileID: 4144681493356327010, guid: 5d5de6c8d60889b499ccdd7097858c2d, type: 3}
       propertyPath: m_LocalPosition.x
@@ -223,6 +223,14 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
+    - target: {fileID: 8160584270229513922, guid: 5d5de6c8d60889b499ccdd7097858c2d, type: 3}
+      propertyPath: m_Color.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8160584270229513922, guid: 5d5de6c8d60889b499ccdd7097858c2d, type: 3}
+      propertyPath: m_Color.g
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -258,7 +266,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1478222748911455975, guid: 5d5de6c8d60889b499ccdd7097858c2d, type: 3}
       propertyPath: m_Name
-      value: Button (1)
+      value: ButtonDark
       objectReference: {fileID: 0}
     - target: {fileID: 4144681493356327010, guid: 5d5de6c8d60889b499ccdd7097858c2d, type: 3}
       propertyPath: m_Pivot.x
@@ -286,11 +294,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4144681493356327010, guid: 5d5de6c8d60889b499ccdd7097858c2d, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 650
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4144681493356327010, guid: 5d5de6c8d60889b499ccdd7097858c2d, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 100
+      value: 175.5
       objectReference: {fileID: 0}
     - target: {fileID: 4144681493356327010, guid: 5d5de6c8d60889b499ccdd7097858c2d, type: 3}
       propertyPath: m_LocalPosition.x
@@ -387,6 +395,14 @@ PrefabInstance:
     - target: {fileID: 6763594015754271149, guid: 5d5de6c8d60889b499ccdd7097858c2d, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.GameObject, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 8160584270229513922, guid: 5d5de6c8d60889b499ccdd7097858c2d, type: 3}
+      propertyPath: m_Color.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8160584270229513922, guid: 5d5de6c8d60889b499ccdd7097858c2d, type: 3}
+      propertyPath: m_Color.r
+      value: 0.019607844
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

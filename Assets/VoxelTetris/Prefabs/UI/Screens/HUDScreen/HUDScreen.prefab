@@ -393,6 +393,7 @@ MonoBehaviour:
   _scoreText: {fileID: 3726526104539163079}
   _slowDropStartAbilityIcon: {fileID: 3389858410413161435}
   _scoreDeltaPrefab: {fileID: 236494597925738898, guid: e8d888b0961621942961836ccc223765, type: 3}
+  _scoreDeltaDuration: 0
 --- !u!1 &6575835726969927321
 GameObject:
   m_ObjectHideFlags: 0
@@ -815,6 +816,14 @@ PrefabInstance:
       propertyPath: m_text
       value: "\u0421\u0442\u0430\u0442\u0438\u0441\u0442\u0438\u043A\u0430"
       objectReference: {fileID: 0}
+    - target: {fileID: 855272615934465884, guid: 5d5de6c8d60889b499ccdd7097858c2d, type: 3}
+      propertyPath: m_fontSize
+      value: 40
+      objectReference: {fileID: 0}
+    - target: {fileID: 855272615934465884, guid: 5d5de6c8d60889b499ccdd7097858c2d, type: 3}
+      propertyPath: m_fontSizeBase
+      value: 40
+      objectReference: {fileID: 0}
     - target: {fileID: 1478222748911455975, guid: 5d5de6c8d60889b499ccdd7097858c2d, type: 3}
       propertyPath: m_Name
       value: Button (1)
@@ -849,7 +858,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4144681493356327010, guid: 5d5de6c8d60889b499ccdd7097858c2d, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 67
+      value: 140
       objectReference: {fileID: 0}
     - target: {fileID: 4144681493356327010, guid: 5d5de6c8d60889b499ccdd7097858c2d, type: 3}
       propertyPath: m_LocalPosition.x
