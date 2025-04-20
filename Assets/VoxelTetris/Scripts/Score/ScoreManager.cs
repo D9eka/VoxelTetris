@@ -46,8 +46,15 @@ public class ScoreManager : MonoBehaviour
 
     private void Start()
     {
+        ServiceLocator.Instance.LevelController.StartGame += StartGame;
+        
         ServiceLocator.Instance.GridController.OnPlaceFigure += OnPlaceFigure;
         ServiceLocator.Instance.GridController.OnClearPlane += OnClearPlane;
+    }
+
+    private void StartGame()
+    {
+        Score = 0;
     }
 
     private void OnPlaceFigure(FigureController figure, int planePosY)

@@ -48,7 +48,9 @@ public class HUDScreen : MonoBehaviour
 
     private void OnEnable()
     {
-        ServiceLocator.Instance.ScoreManager.OnScoreChanged += OnScoreChanged;
+        ScoreManager scoreManager = ServiceLocator.Instance.ScoreManager;
+        _scoreText.text = scoreManager.Score.ToString();
+        scoreManager.OnScoreChanged += OnScoreChanged;
         
         ServiceLocator.Instance.AbilityManager.OnStartSlowDropAbility += OnStartSlowDropAbility;
         ServiceLocator.Instance.AbilityManager.OnEndSlowDropAbility += OnEndSlowDownAbility;
