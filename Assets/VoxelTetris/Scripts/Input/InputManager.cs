@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
 public class InputManager : MonoBehaviour
@@ -75,6 +77,24 @@ public class InputManager : MonoBehaviour
         ServiceLocator.Instance.LevelController.UIResume -= OnUIResume;
         ServiceLocator.Instance.LevelController.EndGame -= OnEndGame;
     }
+    
+    private bool IsPointerOverUI()
+    {
+        if (EventSystem.current == null) 
+            return false;
+
+        Vector2 screenPos = Pointer.current != null
+            ? Pointer.current.position.ReadValue()
+            : Mouse.current.position.ReadValue();
+
+        var pointerData = new PointerEventData(EventSystem.current) {
+            position = screenPos
+        };
+        var results = new List<RaycastResult>();
+        EventSystem.current.RaycastAll(pointerData, results);
+
+        return results.Count > 0;
+    }
 
     private void OnMoveFigurePerformed(InputAction.CallbackContext context)
     {
@@ -103,6 +123,11 @@ public class InputManager : MonoBehaviour
 
     private void OnPlayerRotateCameraPerformed(InputAction.CallbackContext context)
     {
+        if (IsPointerOverUI())
+        {
+            return;
+        }
+
         PlayerRotateCamera.Invoke(context.ReadValue<float>());
     }
 
