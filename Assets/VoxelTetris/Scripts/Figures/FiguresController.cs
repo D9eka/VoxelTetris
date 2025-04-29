@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -27,7 +26,9 @@ public class FiguresController : MonoBehaviour
         GridModel gridModel = ServiceLocator.Instance.GridController.Model;
         Vector3Int spawnPosition = Vector3Int.RoundToInt(
             new Vector3(gridModel.Width / 2f, gridModel.Height - _data.SpawnOffsetY, gridModel.Depth / 2f));
-        _figureSpawner = new FigureSpawner(_data.FigurePrefabs, spawnPosition, ServiceLocator.Instance.GridController.transform, _data.FigureColors);
+        FigureCube figureCube = _data.FigureCubes[Random.Range(0, _data.FigureCubes.Length)];
+        _figureSpawner = new FigureSpawner(_data.FigurePrefabs, spawnPosition, 
+            ServiceLocator.Instance.GridController.transform, figureCube, _data.FigureColors);
         
         ServiceLocator.Instance.AbilityManager.OnStartSlowDropAbility += OnStartSlowDropAbility;
         ServiceLocator.Instance.AbilityManager.OnEndSlowDropAbility += OnEndSlowDropAbility;

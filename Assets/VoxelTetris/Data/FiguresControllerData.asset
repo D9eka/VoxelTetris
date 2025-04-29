@@ -20,6 +20,11 @@ MonoBehaviour:
   - {fileID: 336621199639706501, guid: a9b24d16cc654fe42acf040271281c62, type: 3}
   - {fileID: 7050380936880667873, guid: 2009f696f4f56ad4ba6c35b2b6558bc0, type: 3}
   - {fileID: 5412748219025169363, guid: 5e8a03426b81b77409829905c08ba6cd, type: 3}
+  _figureCubes:
+  - {fileID: 3983801258121906637, guid: 341545db9c8b073419427902656b2d62, type: 3}
+  - {fileID: 280938442115394301, guid: 2b68ac441a99f5a43981bbe5ccbfef06, type: 3}
+  - {fileID: 2812096643312725494, guid: 4a86f3f898c80744c958fccef15ab280, type: 3}
+  - {fileID: 85518237694237160, guid: ce667d8e3960141469958151fdb8799d, type: 3}
   _figureColors:
   - {fileID: 2100000, guid: 76178dfc15cf85b4ba72ba0f611e7ef9, type: 2}
   - {fileID: 2100000, guid: e0b395742b1a1c2448f07e873e00e458, type: 2}

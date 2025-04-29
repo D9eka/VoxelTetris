@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 
 public class FigurePartController : MonoBehaviour
@@ -9,5 +8,11 @@ public class FigurePartController : MonoBehaviour
     {
         FigureController figureController = GetComponentInParent<FigureController>();
         Model = new(this, figureController, Vector3Int.RoundToInt(transform.position));
+    }
+
+    public void Initialize(FigureCube cubePrefab, Material color)
+    {
+        FigureCube cube = Instantiate(cubePrefab, transform.position, Quaternion.identity, transform);
+        cube.SetColor(color);
     }
 }

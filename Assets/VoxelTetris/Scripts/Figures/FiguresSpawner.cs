@@ -5,15 +5,18 @@ public class FigureSpawner
     private GameObject[] _figuresPrefabs;
     private Vector3Int _spawnPosition;
     private Transform _parentTransform;
+    private FigureCube _cube;
     private Material[] _colors;
 
     private int _previousColorIndex = 0;
     
-    public FigureSpawner(GameObject[] figuresPrefabs, Vector3Int spawnPosition, Transform parentTransform, Material[] colors)
+    public FigureSpawner(GameObject[] figuresPrefabs, Vector3Int spawnPosition, 
+        Transform parentTransform, FigureCube cube, Material[] colors)
     {
         _figuresPrefabs = figuresPrefabs;
         _spawnPosition = spawnPosition;
         _parentTransform = parentTransform;
+        _cube = cube;
         _colors = colors;
     }
 
@@ -27,9 +30,9 @@ public class FigureSpawner
         
         _previousColorIndex = (_previousColorIndex + 1) % _colors.Length;
         Material color = _colors[_previousColorIndex];
-        foreach (var meshRenderer in figure.GetComponentsInChildren<MeshRenderer>())
+        foreach (FigurePartController figurePartController in figure.GetComponentsInChildren<FigurePartController>())
         {
-            meshRenderer.material = color;
+            figurePartController.Initialize(_cube, color);
         }
         
         return figure.GetComponent<FigureController>();
