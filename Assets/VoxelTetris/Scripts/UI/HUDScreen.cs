@@ -5,6 +5,8 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
+using YG;
+
 
 public class HUDScreen : MonoBehaviour
 {
@@ -54,6 +56,7 @@ public class HUDScreen : MonoBehaviour
         
         ServiceLocator.Instance.AbilityManager.OnStartSlowDropAbility += OnStartSlowDropAbility;
         ServiceLocator.Instance.AbilityManager.OnEndSlowDropAbility += OnEndSlowDownAbility;
+        YandexGame.RewardVideoEvent += OnRewardVideoEvent;
     }
 
     private void OnDisable()
@@ -69,16 +72,29 @@ public class HUDScreen : MonoBehaviour
         
         ServiceLocator.Instance.AbilityManager.OnStartSlowDropAbility -= OnStartSlowDropAbility;
         ServiceLocator.Instance.AbilityManager.OnEndSlowDropAbility -= OnEndSlowDownAbility;
+        YandexGame.RewardVideoEvent -= OnRewardVideoEvent;
+    }
+
+    private void OnRewardVideoEvent(int id)
+    {
+        if (id == 1)
+        {
+            ActivateSlowDropAbility?.Invoke();
+        }
+        else if (id == 2)
+        {
+            ActivateDeletePlaneAbility?.Invoke();
+        }
     }
 
     public void OnActivateSlowDropAbility()
     {
-        ActivateSlowDropAbility?.Invoke();
+        YandexGame.RewVideoShow(1);
     }
     
     public void OnActivateDeletePlaneAbility()
     {
-        ActivateDeletePlaneAbility?.Invoke();
+        YandexGame.RewVideoShow(2);
     }
 
     private void OnScoreChanged(int score)
