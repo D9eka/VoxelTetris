@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using YG;
 
 public class ScoreManager : MonoBehaviour
 {
@@ -31,6 +32,7 @@ public class ScoreManager : MonoBehaviour
 
     private ScoreType _previousScoreType;
     private int _previousScoreTypeLength;
+    private DateTime _currentDate;
 
     private void Awake()
     {
@@ -47,9 +49,12 @@ public class ScoreManager : MonoBehaviour
     private void Start()
     {
         ServiceLocator.Instance.LevelController.StartGame += StartGame;
-        
+        ServiceLocator.Instance.LevelController.EndGame += SaveScores;
+
         ServiceLocator.Instance.GridController.OnPlaceFigure += OnPlaceFigure;
         ServiceLocator.Instance.GridController.OnClearPlane += OnClearPlane;
+
+        _currentDate = DateTime.Now.Date;
     }
 
     private void StartGame()
@@ -93,5 +98,37 @@ public class ScoreManager : MonoBehaviour
         }
 
         return additionalScore;
+    }
+    private void SaveScores()
+    {
+        var saves = YandexGame.savesData;
+
+        saves.previousGameScore = _score;
+
+        if (_score > saves.allTimeBestScore)
+        {
+            saves.allTimeBestScore = _score;
+            YandexGame.NewLeaderboardScores("bestScore", saves.allTimeBestScore);
+        }
+
+        DateTime lastDate;
+        if (!DateTime.TryParse(saves.lastPlayDate, out lastDate))
+            lastDate = DateTime.MinValue;
+
+        if (lastDate.Date == _currentDate.Date)
+        {
+            if (_score > saves.dailyBestScore)
+            {
+                saves.dailyBestScore = _score;
+            }
+        }
+        else
+        {
+            saves.dailyBestScore = _score;
+        }
+
+        saves.lastPlayDate = _currentDate.ToString();
+
+        YandexGame.SaveProgress();
     }
 }
