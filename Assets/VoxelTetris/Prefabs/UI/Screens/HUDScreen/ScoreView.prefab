@@ -228,3 +228,4 @@ MonoBehaviour:
   _scoreText: {fileID: 6711841586281901201}
   _dailyBestScoreColor: {r: 0, g: 1, b: 0, a: 1}
   _allTimeBestScoreColor: {r: 1, g: 1, b: 0, a: 1}
+  _newBestScoreClip: {fileID: 8300000, guid: 5096abd65f769f6409870af8ed854d45, type: 3}

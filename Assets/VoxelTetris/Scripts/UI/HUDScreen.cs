@@ -7,7 +7,6 @@ using UnityEngine.UI;
 using Random = UnityEngine.Random;
 using YG;
 
-
 public class HUDScreen : MonoBehaviour
 {
     [SerializeField] private ScoreView _scoreView;
@@ -16,6 +15,10 @@ public class HUDScreen : MonoBehaviour
     [Space]
     [SerializeField] private GameObject _scoreDeltaPrefab;
     [SerializeField] private float _scoreDeltaDuration;
+    [Space]
+    [SerializeField] private AudioClip _activateAbilityClip;
+    [SerializeField] private AudioClip _slowDropAbilityClip;
+    [SerializeField] private AudioClip _deletePlainClip;
     
     public Action ActivateSlowDropAbility;
     public Action ActivateDeletePlaneAbility;
@@ -27,6 +30,9 @@ public class HUDScreen : MonoBehaviour
     private float _prefabHeight;
 
     private List<GameObject> _spawnedScores;
+
+    private AbilityManager _abilityManager;
+    private AudioManager _audioManager;
 
     private void Awake()
     {
@@ -48,8 +54,11 @@ public class HUDScreen : MonoBehaviour
 
     private void OnEnable()
     {
-        ServiceLocator.Instance.AbilityManager.OnStartSlowDropAbility += OnStartSlowDropAbility;
-        ServiceLocator.Instance.AbilityManager.OnEndSlowDropAbility += OnEndSlowDownAbility;
+        _abilityManager = ServiceLocator.Instance.AbilityManager;
+        _audioManager = ServiceLocator.Instance.AudioManager;
+        
+        _abilityManager.OnStartSlowDropAbility += OnStartSlowDropAbility;
+        _abilityManager.OnEndSlowDropAbility += OnEndSlowDownAbility;
         YandexGame.RewardVideoEvent += OnRewardVideoEvent;
     }
     
@@ -62,8 +71,8 @@ public class HUDScreen : MonoBehaviour
         }
         _spawnedScores.Clear();
         
-        ServiceLocator.Instance.AbilityManager.OnStartSlowDropAbility -= OnStartSlowDropAbility;
-        ServiceLocator.Instance.AbilityManager.OnEndSlowDropAbility -= OnEndSlowDownAbility;
+        _abilityManager.OnStartSlowDropAbility -= OnStartSlowDropAbility;
+        _abilityManager.OnEndSlowDropAbility -= OnEndSlowDownAbility;
         YandexGame.RewardVideoEvent -= OnRewardVideoEvent;
     }
 
@@ -80,14 +89,24 @@ public class HUDScreen : MonoBehaviour
 
     public void OnActivateSlowDropAbility()
     {
-        ServiceLocator.Instance.FiguresController.StopSpawning();
+        OnStartVideoEvent();
         YandexGame.RewVideoShow(1);
     }
     
     public void OnActivateDeletePlaneAbility()
     {
-        ServiceLocator.Instance.FiguresController.StopSpawning();
+        OnStartVideoEvent();
         YandexGame.RewVideoShow(2);
+    }
+
+    private void OnStartVideoEvent()
+    {
+        _audioManager.PlaySound(_activateAbilityClip, Vector3.zero);
+        ServiceLocator.Instance.FiguresController.StopSpawning();
+
+#if  UNITY_EDITOR
+        OnRewardVideoEvent(0);
+#endif
     }
 
     private void OnStartSlowDropAbility(float timeModifier)
@@ -102,16 +121,17 @@ public class HUDScreen : MonoBehaviour
 
     private void OnRewardVideoEvent(int id)
     {
+        ServiceLocator.Instance.FiguresController.StartSpawning();
         if (id == 1)
         {
             ActivateSlowDropAbility?.Invoke();
+            _audioManager.PlaySound(_slowDropAbilityClip, Vector3.zero);
         }
         else if (id == 2)
         {
             ActivateDeletePlaneAbility?.Invoke();
+            _audioManager.PlaySound(_deletePlainClip, Vector3.zero);
         }
-        
-        ServiceLocator.Instance.FiguresController.StartSpawning();
     }
 
     private IEnumerator SpawnScoreDelta(int delta)

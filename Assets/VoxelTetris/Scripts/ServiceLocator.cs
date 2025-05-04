@@ -11,6 +11,7 @@ public class ServiceLocator : MonoBehaviour
     public ScoreManager ScoreManager => _scoreManager;
     public AbilityManager AbilityManager => _abilityManager;
     public SavesManager SavesManager => _savesManager;
+    public AudioManager AudioManager => _audioManager;
     
     public static ServiceLocator Instance { get; private set; }
     
@@ -26,6 +27,7 @@ public class ServiceLocator : MonoBehaviour
     [SerializeField] private AbilityManager _abilityManager;
     [Space]
     [SerializeField] private SavesManager _savesManager;
+    [SerializeField] private AudioManager _audioManager;
 
     private void Awake()
     {

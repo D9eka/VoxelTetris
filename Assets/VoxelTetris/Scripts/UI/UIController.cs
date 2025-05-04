@@ -4,9 +4,7 @@ using UnityEngine;
 
 public class UIController : MonoBehaviour
 {
-    public StatisticsScreen StatisticsScreen => _statisticsScreen.GetComponent<StatisticsScreen>();
     public HUDScreen HUDScreen => _hudScreen.GetComponent<HUDScreen>();
-    public EndGameScreen EndGameScreen => _endGameScreen.GetComponent<EndGameScreen>();
 
     [SerializeField] private GameObject _uiBlur;
     [Space]

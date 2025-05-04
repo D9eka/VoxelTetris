@@ -7,6 +7,8 @@ public class ScoreView : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _scoreText;
     [SerializeField] private Color _dailyBestScoreColor;
     [SerializeField] private Color _allTimeBestScoreColor;
+    [Space]
+    [SerializeField] private AudioClip _newBestScoreClip;
     
     public Action<int> OnScoreChanged;
 
@@ -14,9 +16,16 @@ public class ScoreView : MonoBehaviour
     private int _currentScore;
     private int _previousScore;
     
+    private AudioManager _audioManager;
+    
     private void Awake()
     {
         _initialScoreColor = _scoreText.color;
+    }
+
+    private void Start()
+    {
+        _audioManager = ServiceLocator.Instance.AudioManager;
     }
 
     private void OnEnable()
@@ -48,13 +57,21 @@ public class ScoreView : MonoBehaviour
     private void ChangeScoreTextColor()
     {
         SavesManager savesManager = ServiceLocator.Instance.SavesManager;
+        bool needSound = false;
         if (_currentScore > savesManager.GetDailyBestScore())
         {
             _scoreText.color = _dailyBestScoreColor;
+            needSound = true;
         }
         if (_currentScore > savesManager.GetAllTimeBestScore())
         {
             _scoreText.color = _allTimeBestScoreColor;
+            needSound = true;
+        }
+
+        if (needSound)
+        {
+            _audioManager.PlaySound(_newBestScoreClip, Vector3.zero);
         }
     }
 }
