@@ -25,6 +25,16 @@ public class SavesManager : MonoBehaviour
     {
         return _saves?.allTimeBestScore ?? 0;
     }
+
+    public float GetSoundVolume()
+    {
+        return _saves?.soundVolume ?? 0f;
+    }
+
+    public float GetMusicVolume()
+    {
+        return _saves?.musicVolume ?? 0f;
+    }
     
     public void SaveScore(int score)
     {
@@ -47,6 +57,36 @@ public class SavesManager : MonoBehaviour
 
         _saves.lastPlayDate = currentDate.ToString();
         YandexGame.SaveProgress();
+    }
+
+    public void SaveSoundVolume(float volume)
+    {
+        if (_saves == null)
+        {
+            GetSaves();
+        }
+
+        if (_saves == null)
+        {
+            return;
+        }
+        
+        _saves.soundVolume = volume;
+    }
+
+    public void SaveMusicVolume(float volume)
+    {
+        if (_saves == null)
+        {
+            GetSaves();
+        }
+
+        if (_saves == null)
+        {
+            return;
+        }
+        
+        _saves.musicVolume = volume;
     }
 
     private void SavePreviousScore(int score)

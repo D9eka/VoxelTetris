@@ -27,6 +27,9 @@ namespace YG
         public int dailyBestScore;
         public string lastPlayDate;
 
+        public float soundVolume = 0.7f;
+        public float musicVolume = 0.5f;
+
         // Вы можете выполнить какие то действия при загрузке сохранений
         public SavesYG()
         {
