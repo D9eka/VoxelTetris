@@ -11,55 +11,72 @@ public class FiguresController : MonoBehaviour
 
     private List<FigureController> _figuresToMove;
     private FigureController _activeFigure;
-
+    
+    private float _defaultTimeToDropFigure;
     private float _timeToDropFigure;
     private float _timeFromLastMove;
+    
+    private AbilityManager _abilityManager;
+    private GridController _gridController;
+    private InputManager _inputManager;
+    private LevelController _levelController;
+    private ScoreManager _scoreManager;
 
     private void Awake()
     {
         _figuresToMove = new();
-        _timeToDropFigure = _data.TimeToDropFigure;
+        _defaultTimeToDropFigure = _data.LowTimeToDropFigure;
     }
 
     private void Start()
     {
-        GridModel gridModel = ServiceLocator.Instance.GridController.Model;
+        _abilityManager = ServiceLocator.Instance.AbilityManager;
+        _gridController = ServiceLocator.Instance.GridController;
+        _inputManager = ServiceLocator.Instance.InputManager;
+        _levelController = ServiceLocator.Instance.LevelController;
+        _scoreManager = ServiceLocator.Instance.ScoreManager;
+        
+        _timeToDropFigure = _defaultTimeToDropFigure;
+        
+        GridModel gridModel = _gridController.Model;
         Vector3Int spawnPosition = Vector3Int.RoundToInt(
             new Vector3(gridModel.Width / 2f, gridModel.Height - _data.SpawnOffsetY, gridModel.Depth / 2f));
         FigureCube figureCube = _data.FigureCubes[Random.Range(0, _data.FigureCubes.Length)];
         _figureSpawner = new FigureSpawner(_data.FigurePrefabs, spawnPosition, 
-            ServiceLocator.Instance.GridController.transform, figureCube, _data.FigureColors);
+            _gridController.transform, figureCube, _data.FigureColors);
         
-        ServiceLocator.Instance.AbilityManager.OnStartSlowDropAbility += OnStartSlowDropAbility;
-        ServiceLocator.Instance.AbilityManager.OnEndSlowDropAbility += OnEndSlowDropAbility;
+        _abilityManager.OnStartSlowDropAbility += OnStartSlowDropAbility;
+        _abilityManager.OnEndSlowDropAbility += OnEndSlowDropAbility;
         
-        ServiceLocator.Instance.GridController.OnReachLimit += OnReachLimit;
+        _gridController.OnReachLimit += OnReachLimit;
         
-        ServiceLocator.Instance.InputManager.PlayerMoveFigure += OnPlayerMoveFigure;
-        ServiceLocator.Instance.InputManager.PlayerRotateFigure += OnPlayerRotateFigure;
-        ServiceLocator.Instance.InputManager.PlayerDropFigure += OnPlayerDropFigure;
+        _inputManager.PlayerMoveFigure += OnPlayerMoveFigure;
+        _inputManager.PlayerRotateFigure += OnPlayerRotateFigure;
+        _inputManager.PlayerDropFigure += OnPlayerDropFigure;
         
-        ServiceLocator.Instance.LevelController.StartGame += OnStartGame;
-        ServiceLocator.Instance.LevelController.PlayerPause += OnPlayerPause;
-        ServiceLocator.Instance.LevelController.UIResume += OnUIResume;
-        ServiceLocator.Instance.LevelController.EndGame += OnEndGame;
+        _levelController.StartGame += OnStartGame;
+        _levelController.PlayerPause += OnPlayerPause;
+        _levelController.UIResume += OnUIResume;
+        _levelController.EndGame += OnEndGame;
+        
+        _scoreManager.OnScoreChanged += OnScoreChanged;
     }
 
     private void OnDisable()
     {
-        ServiceLocator.Instance.AbilityManager.OnStartSlowDropAbility -= OnStartSlowDropAbility;
-        ServiceLocator.Instance.AbilityManager.OnEndSlowDropAbility -= OnEndSlowDropAbility;
+        _abilityManager.OnStartSlowDropAbility -= OnStartSlowDropAbility;
+        _abilityManager.OnEndSlowDropAbility -= OnEndSlowDropAbility;
         
-        ServiceLocator.Instance.GridController.OnReachLimit -= OnReachLimit;
+        _gridController.OnReachLimit -= OnReachLimit;
         
-        ServiceLocator.Instance.InputManager.PlayerMoveFigure -= OnPlayerMoveFigure;
-        ServiceLocator.Instance.InputManager.PlayerRotateFigure -= OnPlayerRotateFigure;
-        ServiceLocator.Instance.InputManager.PlayerDropFigure -= OnPlayerDropFigure;
+        _inputManager.PlayerMoveFigure -= OnPlayerMoveFigure;
+        _inputManager.PlayerRotateFigure -= OnPlayerRotateFigure;
+        _inputManager.PlayerDropFigure -= OnPlayerDropFigure;
         
-        ServiceLocator.Instance.LevelController.StartGame -= OnStartGame;
-        ServiceLocator.Instance.LevelController.PlayerPause -= OnPlayerPause;
-        ServiceLocator.Instance.LevelController.UIResume -= OnUIResume;
-        ServiceLocator.Instance.LevelController.EndGame -= OnEndGame;
+        _levelController.StartGame -= OnStartGame;
+        _levelController.PlayerPause -= OnPlayerPause;
+        _levelController.UIResume -= OnUIResume;
+        _levelController.EndGame -= OnEndGame;
     }
 
     private void Update()
@@ -81,12 +98,14 @@ public class FiguresController : MonoBehaviour
     [ContextMenu("StartSpawning")]
     public void StartSpawning()
     {
+        Debug.Log("StartSpawning");
         Active = true;
     }
     
     [ContextMenu("StopSpawning")]
     public void StopSpawning()
     {
+        Debug.Log("StopSpawning");
         Active = false;
     }
 
@@ -123,7 +142,7 @@ public class FiguresController : MonoBehaviour
         _figuresToMove.Remove(_activeFigure);
     
         Vector3Int directionInt = Vector3Int.down;
-        while (ServiceLocator.Instance.GridController.TryMoveFigure(_activeFigure.Model, directionInt))
+        while (_gridController.TryMoveFigure(_activeFigure.Model, directionInt))
         {
             _activeFigure.Move(directionInt);
         }
@@ -222,7 +241,7 @@ public class FiguresController : MonoBehaviour
 
     private void OnEndSlowDropAbility()
     {
-        _timeToDropFigure = _data.TimeToDropFigure;
+        _timeToDropFigure = _defaultTimeToDropFigure;
     }
     
     private void OnPlayerMoveFigure(Vector2 input)
@@ -266,6 +285,22 @@ public class FiguresController : MonoBehaviour
         StopSpawning();
         Debug.Log("Reach Limit");
     }
+    
+    private void OnScoreChanged(int score)
+    {
+        if (score <= _data.ScoreToMediumTimeToDropFigure)
+        {
+            _defaultTimeToDropFigure = _data.LowTimeToDropFigure;
+        }
+        if (score <= _data.ScoreToHighTimeToDropFigure)
+        {
+            _defaultTimeToDropFigure = _data.MediumTimeToDropFigure;
+        }
+        if (score > _data.ScoreToHighTimeToDropFigure)
+        {
+            _defaultTimeToDropFigure = _data.HighTimeToDropFigure;
+        }
+    }
 
     private void MoveFigures()
     {
@@ -307,7 +342,7 @@ public class FiguresController : MonoBehaviour
         }
 
         bool wasMoved = false;
-        bool canMove = ServiceLocator.Instance.GridController.TryMoveFigure(figure.Model, directionInt);
+        bool canMove = _gridController.TryMoveFigure(figure.Model, directionInt);
     
         if (canMove)
         {

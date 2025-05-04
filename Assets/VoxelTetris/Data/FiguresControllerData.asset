@@ -34,4 +34,8 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 82c4fc98f5972c24fb52d048ffb7be62, type: 2}
   - {fileID: 2100000, guid: 854948ad49138f94ca4c08686e767d7b, type: 2}
   _spawnOffsetY: 5
-  _timeToDropFigure: 1
+  _lowTimeToDropFigure: 1.5
+  _mediumTimeToDropFigure: 1
+  _ScoreToMediumTimeToDropFigure: 1000
+  _highTimeToDropFigure: 0.5
+  _ScoreToHighTimeToDropFigure: 3000
