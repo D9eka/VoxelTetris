@@ -10,7 +10,8 @@ using YG;
 
 public class HUDScreen : MonoBehaviour
 {
-    [SerializeField] private TextMeshProUGUI _scoreText;
+    [SerializeField] private ScoreView _scoreView;
+    [Space]
     [SerializeField] private Image _slowDropStartAbilityIcon;
     [Space]
     [SerializeField] private GameObject _scoreDeltaPrefab;
@@ -18,47 +19,40 @@ public class HUDScreen : MonoBehaviour
     
     public Action ActivateSlowDropAbility;
     public Action ActivateDeletePlaneAbility;
-
-    private int _previousScore;
     
-    private float rectWidth;
-    private float rectHeight;
+    private float _rectWidth;
+    private float _rectHeight;
 
-    private float prefabWidth;
-    private float prefabHeight;
+    private float _prefabWidth;
+    private float _prefabHeight;
 
     private List<GameObject> _spawnedScores;
 
     private void Awake()
     {
         Vector2 rectSizes = GetSizes(GetComponent<RectTransform>());
-        rectWidth = rectSizes.x;
-        rectHeight = rectSizes.y;
+        _rectWidth = rectSizes.x;
+        _rectHeight = rectSizes.y;
         
         Vector2 prefabRectSizes = GetSizes(_scoreDeltaPrefab.GetComponent<RectTransform>());
-        prefabWidth = prefabRectSizes.x;
-        prefabHeight = prefabRectSizes.y;
+        _prefabWidth = prefabRectSizes.x;
+        _prefabHeight = prefabRectSizes.y;
         
         _spawnedScores = new List<GameObject>();
     }
 
-    private Vector2 GetSizes(RectTransform rectTransform)
+    private void Start()
     {
-        Rect rect = rectTransform.rect;
-        return new Vector2(rect.width, rect.height);
+        _scoreView.OnScoreChanged += OnScoreChanged;
     }
 
     private void OnEnable()
     {
-        ScoreManager scoreManager = ServiceLocator.Instance.ScoreManager;
-        _scoreText.text = scoreManager.Score.ToString();
-        scoreManager.OnScoreChanged += OnScoreChanged;
-        
         ServiceLocator.Instance.AbilityManager.OnStartSlowDropAbility += OnStartSlowDropAbility;
         ServiceLocator.Instance.AbilityManager.OnEndSlowDropAbility += OnEndSlowDownAbility;
         YandexGame.RewardVideoEvent += OnRewardVideoEvent;
     }
-
+    
     private void OnDisable()
     {
         StopAllCoroutines();
@@ -68,42 +62,32 @@ public class HUDScreen : MonoBehaviour
         }
         _spawnedScores.Clear();
         
-        ServiceLocator.Instance.ScoreManager.OnScoreChanged -= OnScoreChanged;
-        
         ServiceLocator.Instance.AbilityManager.OnStartSlowDropAbility -= OnStartSlowDropAbility;
         ServiceLocator.Instance.AbilityManager.OnEndSlowDropAbility -= OnEndSlowDownAbility;
         YandexGame.RewardVideoEvent -= OnRewardVideoEvent;
     }
 
-    private void OnRewardVideoEvent(int id)
+    private Vector2 GetSizes(RectTransform rectTransform)
     {
-        if (id == 1)
-        {
-            ActivateSlowDropAbility?.Invoke();
-        }
-        else if (id == 2)
-        {
-            ActivateDeletePlaneAbility?.Invoke();
-        }
+        Rect rect = rectTransform.rect;
+        return new Vector2(rect.width, rect.height);
+    }
+
+    private void OnScoreChanged(int scoreDelta)
+    {
+        StartCoroutine(SpawnScoreDelta(scoreDelta));
     }
 
     public void OnActivateSlowDropAbility()
     {
+        ServiceLocator.Instance.FiguresController.StopSpawning();
         YandexGame.RewVideoShow(1);
     }
     
     public void OnActivateDeletePlaneAbility()
     {
+        ServiceLocator.Instance.FiguresController.StopSpawning();
         YandexGame.RewVideoShow(2);
-    }
-
-    private void OnScoreChanged(int score)
-    {
-        _scoreText.text = score.ToString();
-        
-        int delta = score - _previousScore;
-        StartCoroutine(SpawnScoreDelta(delta));
-        _previousScore = score;
     }
 
     private void OnStartSlowDropAbility(float timeModifier)
@@ -116,12 +100,26 @@ public class HUDScreen : MonoBehaviour
         _slowDropStartAbilityIcon.gameObject.SetActive(false);
     }
 
+    private void OnRewardVideoEvent(int id)
+    {
+        if (id == 1)
+        {
+            ActivateSlowDropAbility?.Invoke();
+        }
+        else if (id == 2)
+        {
+            ActivateDeletePlaneAbility?.Invoke();
+        }
+        
+        ServiceLocator.Instance.FiguresController.StartSpawning();
+    }
+
     private IEnumerator SpawnScoreDelta(int delta)
     {
         Vector3 spawnPos = new Vector3
             (
-                Random.Range(0, rectWidth - prefabWidth), 
-                -Random.Range(0, rectHeight - prefabHeight),
+                Random.Range(0, _rectWidth - _prefabWidth), 
+                -Random.Range(0, _rectHeight - _prefabHeight),
                 transform.position.z
             );
         TextMeshProUGUI scoreDelta = Instantiate(_scoreDeltaPrefab, transform).GetComponent<TextMeshProUGUI>();

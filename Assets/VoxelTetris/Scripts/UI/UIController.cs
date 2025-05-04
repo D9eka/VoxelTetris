@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -5,6 +6,7 @@ public class UIController : MonoBehaviour
 {
     public StatisticsScreen StatisticsScreen => _statisticsScreen.GetComponent<StatisticsScreen>();
     public HUDScreen HUDScreen => _hudScreen.GetComponent<HUDScreen>();
+    public EndGameScreen EndGameScreen => _endGameScreen.GetComponent<EndGameScreen>();
 
     [SerializeField] private GameObject _uiBlur;
     [Space]
@@ -13,10 +15,12 @@ public class UIController : MonoBehaviour
     [SerializeField] private GameObject _settingsScreen;
     [SerializeField] private GameObject _hudScreen;
     [SerializeField] private GameObject _pauseScreen;
-    [SerializeField] private GameObject _reloadScreen;
+    [SerializeField] private GameObject _endGameScreen;
     [SerializeField] private GameObject _confirmExitScreen;
 
     private Stack<GameObject> _screenStack = new Stack<GameObject>();
+
+    private int _bestScore;
 
     private void Start()
     {
@@ -83,7 +87,7 @@ public class UIController : MonoBehaviour
 
     private void OnReachLimit()
     {
-        SetScreenForce(_reloadScreen);
+        SetScreenForce(_endGameScreen);
     }
     
     private void OnStartGame()
