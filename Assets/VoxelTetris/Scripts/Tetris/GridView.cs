@@ -10,8 +10,6 @@ public class GridView : MonoBehaviour
     [SerializeField] private GameObject _gridYLinePrefab;
     [SerializeField] private GameObject _gridZLinePrefab;
     [SerializeField] private GameObject _gridCornerPrefab;
-    [SerializeField] private GameObject _gridPlatformBlock;
-    [SerializeField] private GridWall _initialWallToHide;
 
     private GameObject _platform;
 
@@ -24,22 +22,40 @@ public class GridView : MonoBehaviour
     private GameObject _rightUpCorner;
     private GameObject _leftDownCorner;
     private GameObject _rightDownCorner;
-    
-    private GridWall _hiddenWall;
 
     private float _offset;
 
     private void Start()
     {
-        _hiddenWall = _initialWallToHide;
-        //HideWall(_hiddenWall);
-        
-        ServiceLocator.Instance.InputManager.PlayerRotateCamera += OnRotateCamera;
+        LevelController levelController = ServiceLocator.Instance.LevelController;
+        levelController.StartGame += StartGame;
+        levelController.EndGame += EndGame;
     }
 
-    private void OnDisable()
+    private void StartGame()
     {
-        ServiceLocator.Instance.InputManager.PlayerRotateCamera -= OnRotateCamera;
+        ChangeViewState(true);
+    }
+
+    private void EndGame()
+    {
+        ChangeViewState(false);
+    }
+
+    private void ChangeViewState(bool active)
+    {
+        _platform.gameObject.SetActive(active);
+        
+        _frontWall.gameObject.SetActive(active);
+        _leftWall.gameObject.SetActive(active);
+        _rightWall.gameObject.SetActive(active);
+        _backWall.gameObject.SetActive(active);
+        
+        
+        _leftUpCorner.gameObject.SetActive(active);
+        _rightUpCorner.gameObject.SetActive(active);
+        _leftDownCorner.gameObject.SetActive(active);
+        _rightDownCorner.gameObject.SetActive(active);
     }
 
     public void GenerateGrid(int width, int height, int depth)
@@ -61,11 +77,8 @@ public class GridView : MonoBehaviour
         GenerateCorner(platformYPos, -1, height, depth, 90, new Vector3(_offset, 0, -_offset), _leftUpCorner.transform);
         GenerateCorner(platformYPos, width, height, -1, 270, new Vector3(-_offset, 0, _offset), _rightDownCorner.transform);
         GenerateCorner(platformYPos, width, height, depth, 180, new Vector3(-_offset, 0, -_offset), _rightUpCorner.transform);
-    }
-
-    public void HideWall(GridWall wall)
-    {
-        //ChangeWallActiveState(wall, false);
+        
+        ChangeViewState(false);
     }
 
     private void SpawnBlockParents()
@@ -131,51 +144,5 @@ public class GridView : MonoBehaviour
         GameObject block, Vector3 position, Quaternion rotation, Transform parent)
     {
         Instantiate(block, position, rotation, parent);
-    }
-
-    private void ChangeWallActiveState(GridWall wall, bool state)
-    {
-        switch (wall)
-        {
-            case GridWall.Left:
-                _leftWall.SetActive(state);
-                _leftUpCorner.SetActive(state);
-                _leftDownCorner.SetActive(state);
-                break;
-            case GridWall.Front:
-                _frontWall.SetActive(state);
-                _leftUpCorner.SetActive(state);
-                _rightUpCorner.SetActive(state);
-                break;
-            case GridWall.Right:
-                _rightWall.SetActive(state);
-                _rightUpCorner.SetActive(state);
-                _rightDownCorner.SetActive(state);
-                break;
-            case GridWall.Back:
-                _backWall.SetActive(state);
-                _leftDownCorner.SetActive(state);
-                _rightDownCorner.SetActive(state);
-                break;
-            default:
-                throw new ArgumentOutOfRangeException();
-        }
-    }
-
-    private void OnRotateCamera(float direction)
-    {
-        /*
-        ChangeWallActiveState(_hiddenWall, true);
-        _hiddenWall = NextWall(_hiddenWall, Mathf.RoundToInt(direction));
-        ChangeWallActiveState(_hiddenWall, false);
-        */
-    }
-    
-    private GridWall NextWall(GridWall currentWall, int direction)
-    {
-        int wallCount = Enum.GetValues(typeof(GridWall)).Length;
-        int currentIndex = (int)currentWall;
-        int nextIndex = (currentIndex + direction + wallCount) % wallCount;
-        return (GridWall)nextIndex;
     }
 }
