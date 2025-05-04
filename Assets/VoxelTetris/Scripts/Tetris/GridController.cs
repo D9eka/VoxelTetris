@@ -199,14 +199,11 @@ public class GridController : MonoBehaviour
 
     private void CheckForFiguresInLimit()
     {
-        if (HaveFiguresInLimit())
+        if (Model.Grid[Model.LimitY].Figures.Count > 0 || 
+            Model.Grid[Model.LimitY+1].Figures.Count > 0)
         {
             OnReachLimit?.Invoke();
         }
     }
 
-    private bool HaveFiguresInLimit()
-    {
-        return Model.Grid[Model.LimitY].Figures.Count > 0;
-    }
 }
