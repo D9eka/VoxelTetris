@@ -1,8 +1,6 @@
 using TMPro;
 using UnityEngine;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
-using YG;
 
 public class StatisticsScreen : MonoBehaviour
 {
@@ -16,32 +14,18 @@ public class StatisticsScreen : MonoBehaviour
     
     private void OnEnable()
     {
-        YandexGame.GetDataEvent += SetupScreen;
-
-        if (YandexGame.SDKEnabled)
-            SetupScreen();
-    }
-
-    private void OnDisable()
-    {
-        YandexGame.GetDataEvent -= SetupScreen;
+        SetupScreen();
     }
 
     private void SetupScreen()
     {
-        if (YandexGame.savesData == null)
-        {
-            Debug.LogError("SavesData не загружены!");
-            return;
-        }
+        SavesManager savesManager = ServiceLocator.Instance.SavesManager;
 
-        var saves = YandexGame.savesData;
+        int previousGamePoints = savesManager.GetPreviousScore();
+        int allDayBestPoints = savesManager.GetDailyBestScore();
+        int allTimeBestPoints = savesManager.GetAllTimeBestScore();
 
-        int previousGamePoints = saves.previousGameScore;
-        int allDayBestPoints = saves.dailyBestScore;
-        int allTimeBestPoints = saves.allTimeBestScore;
-
-        Debug.Log($"Загружено: Previous={previousGamePoints}, Daily={allDayBestPoints}, AllTime={allTimeBestPoints}");
+        Debug.Log($"пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ: Previous={previousGamePoints}, Daily={allDayBestPoints}, AllTime={allTimeBestPoints}");
 
         int minPoints = Mathf.Min(previousGamePoints, allDayBestPoints, allTimeBestPoints);
         int maxPoints = Mathf.Max(previousGamePoints, allDayBestPoints, allTimeBestPoints);

@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class ServiceLocator : MonoBehaviour
 {
@@ -11,6 +10,7 @@ public class ServiceLocator : MonoBehaviour
     public GridController GridController => _gridController;
     public ScoreManager ScoreManager => _scoreManager;
     public AbilityManager AbilityManager => _abilityManager;
+    public SavesManager SavesManager => _savesManager;
     
     public static ServiceLocator Instance { get; private set; }
     
@@ -24,6 +24,8 @@ public class ServiceLocator : MonoBehaviour
     [Space]
     [SerializeField] private ScoreManager _scoreManager;
     [SerializeField] private AbilityManager _abilityManager;
+    [Space]
+    [SerializeField] private SavesManager _savesManager;
 
     private void Awake()
     {

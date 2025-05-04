@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
-using YG;
 
 public class ScoreManager : MonoBehaviour
 {
@@ -59,20 +58,16 @@ public class ScoreManager : MonoBehaviour
     private void Start()
     {
         ServiceLocator.Instance.LevelController.StartGame += StartGame;
-        ServiceLocator.Instance.LevelController.EndGame += SaveScores;
         ServiceLocator.Instance.GridController.OnPlaceFigure += OnPlaceFigure;
         ServiceLocator.Instance.GridController.OnClearPlane += OnClearPlane;
         ServiceLocator.Instance.AbilityManager.OnStartSlowDropAbility += OnStartSlowDropAbility;
         ServiceLocator.Instance.AbilityManager.OnEndSlowDropAbility += OnEndSlowDropAbility;
         ServiceLocator.Instance.AbilityManager.OnLayersDeleted += OnLayersDeleted;
-
-        _currentDate = DateTime.Now.Date;
     }
 
     private void OnDisable()
     {
         ServiceLocator.Instance.LevelController.StartGame -= StartGame;
-        ServiceLocator.Instance.LevelController.EndGame -= SaveScores;
         ServiceLocator.Instance.GridController.OnPlaceFigure -= OnPlaceFigure;
         ServiceLocator.Instance.GridController.OnClearPlane -= OnClearPlane;
         ServiceLocator.Instance.AbilityManager.OnStartSlowDropAbility -= OnStartSlowDropAbility;
@@ -113,7 +108,7 @@ public class ScoreManager : MonoBehaviour
 
     private void OnClearPlane(FigureController figure, int planePosY)
     {
-        if (figure == null || !_scoreRules.TryGetValue(figure.Type, out var data))
+        if (!figure || !_scoreRules.TryGetValue(figure.Type, out var data))
         {
             return;
         }
@@ -138,35 +133,5 @@ public class ScoreManager : MonoBehaviour
     private void OnEndSlowDropAbility()
     {
         _timeSlowdownActive = false;
-    }
-
-    private void SaveScores()
-    {
-        var saves = YandexGame.savesData;
-        saves.previousGameScore = _score;
-
-        if (_score > saves.allTimeBestScore)
-        {
-            saves.allTimeBestScore = _score;
-            YandexGame.NewLeaderboardScores("bestScore", saves.allTimeBestScore);
-        }
-
-        if (!DateTime.TryParse(saves.lastPlayDate, out DateTime lastDate))
-        {
-            lastDate = DateTime.MinValue;
-        }
-
-        if (lastDate.Date == _currentDate.Date)
-        {
-            if (_score > saves.dailyBestScore)
-                saves.dailyBestScore = _score;
-        }
-        else
-        {
-            saves.dailyBestScore = _score;
-        }
-
-        saves.lastPlayDate = _currentDate.ToString();
-        YandexGame.SaveProgress();
     }
 }
