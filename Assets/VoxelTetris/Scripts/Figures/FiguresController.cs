@@ -126,6 +126,7 @@ public class FiguresController : MonoBehaviour
     public void AddFigure(FigureController figure, bool setActive = false)
     {
         _figuresToMove.Add(figure);
+        figure.IsMoving = true;
         if (setActive)
         {
             _activeFigure = figure;
@@ -146,6 +147,7 @@ public class FiguresController : MonoBehaviour
         {
             _activeFigure.Move(directionInt);
         }
+        _activeFigure.IsMoving = false;
     
         _activeFigure = null;
     }
@@ -323,6 +325,7 @@ public class FiguresController : MonoBehaviour
             bool canMove = TryMove(figure, Vector3Int.down);
             if (!canMove)
             {
+                figure.IsMoving = false;
                 if (figure == _activeFigure)
                 {
                     _activeFigure = null;

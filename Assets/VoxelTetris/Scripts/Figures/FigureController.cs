@@ -7,6 +7,7 @@ public class FigureController : MonoBehaviour
     public FigureType Type => _type;
     public FigurePartController Center => _center;
     public FigureModel Model { get; private set; } 
+    public bool IsMoving { get; set; }
     
     [SerializeField] private FigureType _type;
     [SerializeField] private FigurePartController _center;

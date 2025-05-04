@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -254,11 +255,33 @@ public class GridController : MonoBehaviour
 
     private void CheckForFiguresInLimit()
     {
-        if (Model.Grid[Model.LimitY].Figures.Count > 0 || 
-            Model.Grid[Model.LimitY+1].Figures.Count > 0)
+        StartCoroutine(CheckForFiguresInLimitCoroutine());
+    }
+
+    private IEnumerator CheckForFiguresInLimitCoroutine()
+    {
+        yield return null;
+
+        for (int i = Model.LimitY; i < Model.Height; i++)
         {
-            OnReachLimit?.Invoke();
+            if (HasNonMovingFigures(Model.Grid[Model.LimitY]))
+            {
+                OnReachLimit?.Invoke();
+                yield return null;
+            }
         }
+    }
+
+    private bool HasNonMovingFigures(GridPlaneModel plane)
+    {
+        foreach (var figure in plane.Figures)
+        {
+            if (!figure.IsMoving)
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void OnEndGame() => ClearPlanes();
