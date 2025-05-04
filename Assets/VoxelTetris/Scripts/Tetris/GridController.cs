@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -25,22 +24,17 @@ public class GridController : MonoBehaviour
     private void Start()
     {
         ServiceLocator.Instance.AbilityManager.OnDeletePlaneAbility += DeletePlaneAbility;
-        
         ServiceLocator.Instance.LevelController.EndGame += OnEndGame;
     }
 
     private void OnDisable()
     {
         ServiceLocator.Instance.AbilityManager.OnDeletePlaneAbility -= DeletePlaneAbility;
-
         ServiceLocator.Instance.LevelController.EndGame -= OnEndGame;
     }
 
     [ContextMenu("PrintModel")]
-    public void PrintModel()
-    {
-        Debug.Log(Model.ToString());
-    }
+    public void PrintModel() => Debug.Log(Model.ToString());
 
     public bool TryMoveFigure(FigureModel figureModel, Vector3Int directionInt)
     {
@@ -49,57 +43,98 @@ public class GridController : MonoBehaviour
         {
             return false;
         }
-    
-        for (int i = 0; i < figureParts.Count; i++)
+
+        bool shouldPlaceFigure = false;
+        bool outOfBounds = false;
+        int placementY = 0;
+
+        foreach (var part in figureParts)
         {
-            Vector3Int newPlacePosition = figureParts[i].Position + directionInt;
-            if (!IsInGrid(newPlacePosition))
-            {
-                //Debug.Log($"НЕ В ГРИДЕ: {figureParts[i].Position} -> {newPlacePosition}");
-                if (newPlacePosition.y < 0)
-                {
-                    OnPlaceFigure?.Invoke(figureModel.Parts[0].Parent, 0);
-                }
-                CheckForFullPlanes();
-                return false;
-            }
-            FigurePartModel newPlace = Model.GetPart(newPlacePosition);
-            if (newPlace != null && newPlace.Parent != figureModel.Parts[0].Parent)
-            {
-                //Debug.Log($"НОВАЯ ПОЗИЦИЯ ЗАНЯТА: {newPlacePosition}");
-                OnPlaceFigure?.Invoke(figureModel.Parts[0].Parent, figureParts[i].Position.y);
-                CheckForFullPlanes();
-                CheckForFiguresInLimit();
-                return false;
-            }
-        }
+            Vector3Int newPos = part.Position + directionInt;
         
-        for (int i = 0; i < figureParts.Count; i++)
-        {
-            TryMoveFigurePart(figureParts[i], directionInt);
+            // Проверяем выход за вертикальные границы (только для движения вниз)
+            if (directionInt.y < 0 && newPos.y < 0)
+            {
+                shouldPlaceFigure = true;
+                placementY = part.Position.y;
+                break;
+            }
+        
+            // Проверяем горизонтальные/глубинные границы
+            if (newPos.x < 0 || newPos.x >= Model.Width || 
+                newPos.z < 0 || newPos.z >= Model.Depth)
+            {
+                outOfBounds = true;
+                break;
+            }
+
+            FigurePartModel existingPart = Model.GetPart(newPos);
+            if (existingPart != null && existingPart.Parent != figureModel.Controller)
+            {
+                shouldPlaceFigure = true;
+                placementY = part.Position.y;
+                break;
+            }
         }
+
+        if (outOfBounds)
+        {
+            return false;
+        }
+
+        if (shouldPlaceFigure)
+        {
+            OnPlaceFigure?.Invoke(figureModel.Controller, placementY);
+            CheckForFullPlanes();
+            CheckForFiguresInLimit();
+            return false;
+        }
+
+        // Если все проверки пройдены - перемещаем фигуру
+        figureParts.ForEach(part => MovePartInGrid(part, part.Position + directionInt));
         return true;
     }
-    
-    private void DeletePlaneAbility()
+
+    private void DeletePlaneAbility(int planesToDelete)
     {
-        FiguresController figuresController = ServiceLocator.Instance.FiguresController;
-        
-        Debug.Log($"CLEAR PLANE: {0}");
-        figuresController.RemoveFiguresPartAtPlane(Model.Grid[0].Figures, 0);
-        Model.Grid[0].Clear();
-        
-        for (int i = 0; i < Model.Grid.Length; i++)
+        int deletedLayers = 0;
+        int fullLayersCount = 0;
+        var figuresController = ServiceLocator.Instance.FiguresController;
+
+        for (int i = 0; i < planesToDelete; i++)
         {
-            figuresController.AddFigures(Model.Grid[i].Figures);
+            if (i >= Model.Grid.Length)
+            {
+                break;
+            }
+
+            bool wasFull = Model.Grid[i].IsFull();
+            var figuresInPlane = new List<FigureController>(Model.Grid[i].Figures);
+        
+            ClearPlane(i);
+            figuresController.RemoveFigures(figuresInPlane); // Новый метод
+
+            deletedLayers++;
+            if (wasFull)
+            {
+                fullLayersCount++;
+            }
+        }
+
+        ServiceLocator.Instance.AbilityManager.NotifyLayersDeleted(deletedLayers, fullLayersCount);
+    
+        // Обновляем только оставшиеся фигуры
+        foreach (var plane in Model.Grid)
+        {
+            figuresController.AddFigures(plane.Figures);
         }
     }
 
     private void ClearPlanes()
     {
-        foreach (GridPlaneModel gridPlaneModel in Model.Grid)
+        foreach (GridPlaneModel plane in Model.Grid)
         {
-            gridPlaneModel.Clear();
+            plane.Clear();
         }
         foreach (FigureController figure in GetComponentsInChildren<FigureController>())
         {
@@ -107,94 +142,114 @@ public class GridController : MonoBehaviour
         }
     }
 
-    private bool IsInGrid(Vector3Int figurePart)
-    {
-        return figurePart.x >= 0 && figurePart.x < Model.Width &&
-               figurePart.y >= 0 && figurePart.y < Model.Height &&
-               figurePart.z >= 0 && figurePart.z < Model.Depth;
-    }
-    
-    public bool CanPlaceFigureAtPositions(FigureModel figureModel, List<Vector3Int> newPositions)
-    {
-        for (int i = 0; i < newPositions.Count; i++)
-        {
-            Vector3Int newPos = newPositions[i];
-            // Проверяем, находится ли позиция в пределах сетки
-            if (!IsInGrid(newPos))
-            {
-                return false;
-            }
-            // Проверяем, свободна ли ячейка или занята частью другой фигуры
-            FigurePartModel partAtNewPos = Model.GetPart(newPos);
-            if (partAtNewPos != null && partAtNewPos.Parent != figureModel.Controller)
-            {
-                return false;
-            }
-        }
-        return true;
-    }
-    
+    private bool IsInGrid(Vector3Int position) => 
+        position.x >= 0 && position.x < Model.Width &&
+        position.y >= 0 && position.y < Model.Height &&
+        position.z >= 0 && position.z < Model.Depth;
+
+    public bool CanPlaceFigureAtPositions(FigureModel figureModel, List<Vector3Int> newPositions) => 
+        AreAllPositionsValid(newPositions, figureModel);
+
     public void UpdateFigurePositions(FigureModel figureModel, List<Vector3Int> oldPositions, List<Vector3Int> newPositions)
     {
-        // Удаляем старые позиции из сетки
-        for (int i = 0; i < oldPositions.Count; i++)
-        {
-            Vector3Int oldPos = oldPositions[i];
-            Model.Grid[oldPos.y].Remove(new Vector2Int(oldPos.x, oldPos.z));
-        }
-        // Добавляем новые позиции в сетку
-        for (int i = 0; i < newPositions.Count; i++)
-        {
-            Vector3Int newPos = newPositions[i];
-            FigurePartModel part = figureModel.Parts[i];
-            Model.Grid[newPos.y].Add(part, new Vector2Int(newPos.x, newPos.z));
-            part.SetPosition(newPos);
-        }
-    }
-    
-    private void OnEndGame()
-    {
-        ClearPlanes();
+        RemovePartsFromGrid(oldPositions);
+        AddPartsToGrid(figureModel, newPositions);
     }
 
-    private bool TryMoveFigurePart(FigurePartModel figurePartModel, Vector3Int directionInt)
+    private bool AreAllPositionsValid(List<Vector3Int> positions, FigureModel figureModel)
     {
-        FigurePartModel oldPlace = Model.GetPart(figurePartModel.Position);
-        if (oldPlace != null)
+        foreach (var pos in positions)
         {
-            Model.Grid[figurePartModel.Position.y].Remove(
-                new Vector2Int(figurePartModel.Position.x, figurePartModel.Position.z));
+            if (!IsInGrid(pos))
+            {
+                return false;
+            }
+            FigurePartModel part = Model.GetPart(pos);
+            if (part != null && part.Parent != figureModel.Controller)
+            {
+                return false;
+            }
         }
-        
-        Vector3Int newPlacePosition = figurePartModel.Position + directionInt;
-        Model.Grid[newPlacePosition.y].Add(figurePartModel, new Vector2Int(newPlacePosition.x, newPlacePosition.z));
-        figurePartModel.SetPosition(newPlacePosition);
         return true;
+    }
+
+    private void MovePartInGrid(FigurePartModel part, Vector3Int newPosition)
+    {
+        RemovePartFromGrid(part.Position);
+        AddPartToGrid(part, newPosition);
+    }
+
+    private void RemovePartsFromGrid(List<Vector3Int> positions)
+    {
+        foreach (var pos in positions)
+        {
+            Model.Grid[pos.y].Remove(new Vector2Int(pos.x, pos.z));
+        }
+    }
+
+    private void AddPartsToGrid(FigureModel figureModel, List<Vector3Int> newPositions)
+    {
+        for (int i = 0; i < newPositions.Count; i++)
+        {
+            Vector3Int pos = newPositions[i];
+            FigurePartModel part = figureModel.Parts[i];
+            Model.Grid[pos.y].Add(part, new Vector2Int(pos.x, pos.z));
+            part.SetPosition(pos);
+        }
+    }
+
+    private void RemovePartFromGrid(Vector3Int position) => 
+        Model.Grid[position.y].Remove(new Vector2Int(position.x, position.z));
+
+    private void AddPartToGrid(FigurePartModel part, Vector3Int newPosition)
+    {
+        Model.Grid[newPosition.y].Add(part, new Vector2Int(newPosition.x, newPosition.z));
+        part.SetPosition(newPosition);
     }
 
     private void CheckForFullPlanes()
     {
         FiguresController figuresController = ServiceLocator.Instance.FiguresController;
-        
-        bool clearPlane = false;
+        List<int> planesToClear = new List<int>();
+
         for (int i = 0; i < Model.Grid.Length; i++)
         {
             if (Model.Grid[i].IsFull())
             {
-                Debug.Log($"CLEAR PLANE: {i}");
-                OnClearPlane?.Invoke(Model.Grid[i].LastFigure, i);
-                figuresController.RemoveFiguresPartAtPlane(Model.Grid[i].Figures, i);
-                Model.Grid[i].Clear();
-                clearPlane = true;
+                planesToClear.Add(i);
             }
-            else
-            { 
-                if (clearPlane)
+        }
+
+        foreach (int planeIndex in planesToClear)
+        {
+            ClearPlane(planeIndex, Model.Grid[planeIndex].LastFigure);
+        }
+
+        if (planesToClear.Count > 0)
+        {
+            for (int i = 0; i < Model.Grid.Length; i++)
+            {
+                if (!planesToClear.Contains(i))
                 {
                     figuresController.AddFigures(Model.Grid[i].Figures);
                 }
             }
         }
+    }
+
+    private void ClearPlane(int planeIndex, FigureController lastFigure = null)
+    {
+        if (planeIndex < 0 || planeIndex >= Model.Grid.Length)
+        {
+            return;
+        }
+        
+        var plane = Model.Grid[planeIndex];
+        FiguresController figuresController = ServiceLocator.Instance.FiguresController;
+        
+        figuresController.RemoveFiguresPartAtPlane(plane.Figures, planeIndex);
+        plane.Clear();
+        OnClearPlane?.Invoke(lastFigure, planeIndex);
     }
 
     private void CheckForFiguresInLimit()
@@ -206,4 +261,5 @@ public class GridController : MonoBehaviour
         }
     }
 
+    private void OnEndGame() => ClearPlanes();
 }

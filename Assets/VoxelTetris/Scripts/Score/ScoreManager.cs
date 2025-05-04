@@ -5,18 +5,9 @@ using YG;
 
 public class ScoreManager : MonoBehaviour
 {
-    public enum ScoreType
-    {
-        PlaceFigure,
-        DeletePlane
-    }
-    
     public int Score 
     {
-        get
-        {
-            return _score;
-        }
+        get => _score;
         private set
         {
             _score = value;
@@ -26,83 +17,132 @@ public class ScoreManager : MonoBehaviour
     
     public Action<int> OnScoreChanged;
 
-    private Dictionary<FigureType, int> _figurePrice;
-    
+    private Dictionary<FigureType, ScoreData> _scoreRules;
     private int _score;
-
-    private ScoreType _previousScoreType;
-    private int _previousScoreTypeLength;
+    private int _comboMultiplier = 1;
+    private bool _timeSlowdownActive;
     private DateTime _currentDate;
+
+    private class ScoreData
+    {
+        public int Placement { get; }
+        public int PlaneClear { get; }
+        public int ComboBonus { get; }
+
+        public ScoreData(int placement, int planeClear, int comboBonus)
+        {
+            Placement = placement;
+            PlaneClear = planeClear;
+            ComboBonus = comboBonus;
+        }
+    }
 
     private void Awake()
     {
-        _figurePrice = new Dictionary<FigureType, int>();
-        _figurePrice.Add(FigureType.I, 100);
-        _figurePrice.Add(FigureType.L, 80);
-        _figurePrice.Add(FigureType.T, 90);
-        _figurePrice.Add(FigureType.O, 70);
-        _figurePrice.Add(FigureType.J, 80);
-        _figurePrice.Add(FigureType.S, 80);
-        _figurePrice.Add(FigureType.Z, 80);
+        InitializeScoreRules();
+    }
+
+    private void InitializeScoreRules()
+    {
+        _scoreRules = new Dictionary<FigureType, ScoreData>
+        {
+            { FigureType.I, new ScoreData(100, 200, 100) },
+            { FigureType.L, new ScoreData(80, 160, 80) },
+            { FigureType.T, new ScoreData(90, 180, 90) },
+            { FigureType.O, new ScoreData(70, 140, 70) },
+            { FigureType.J, new ScoreData(80, 160, 80) },
+            { FigureType.S, new ScoreData(80, 140, 80) },
+            { FigureType.Z, new ScoreData(80, 140, 80) },
+        };
     }
 
     private void Start()
     {
         ServiceLocator.Instance.LevelController.StartGame += StartGame;
         ServiceLocator.Instance.LevelController.EndGame += SaveScores;
-
         ServiceLocator.Instance.GridController.OnPlaceFigure += OnPlaceFigure;
         ServiceLocator.Instance.GridController.OnClearPlane += OnClearPlane;
+        ServiceLocator.Instance.AbilityManager.OnStartSlowDropAbility += OnStartSlowDropAbility;
+        ServiceLocator.Instance.AbilityManager.OnEndSlowDropAbility += OnEndSlowDropAbility;
+        ServiceLocator.Instance.AbilityManager.OnLayersDeleted += OnLayersDeleted;
 
         _currentDate = DateTime.Now.Date;
+    }
+
+    private void OnDisable()
+    {
+        ServiceLocator.Instance.LevelController.StartGame -= StartGame;
+        ServiceLocator.Instance.LevelController.EndGame -= SaveScores;
+        ServiceLocator.Instance.GridController.OnPlaceFigure -= OnPlaceFigure;
+        ServiceLocator.Instance.GridController.OnClearPlane -= OnClearPlane;
+        ServiceLocator.Instance.AbilityManager.OnStartSlowDropAbility -= OnStartSlowDropAbility;
+        ServiceLocator.Instance.AbilityManager.OnEndSlowDropAbility -= OnEndSlowDropAbility;
+        ServiceLocator.Instance.AbilityManager.OnLayersDeleted -= OnLayersDeleted;
     }
 
     private void StartGame()
     {
         Score = 0;
+        _comboMultiplier = 1;
     }
 
     private void OnPlaceFigure(FigureController figure, int planePosY)
     {
-        Score += GetAdditionalScore(_figurePrice[figure.Type], ScoreType.PlaceFigure, planePosY);
+        if (!_scoreRules.TryGetValue(figure.Type, out var data))
+        {
+            return;
+        }
+
+        float bonusMultiplier = 1f;
+        
+        // Бонус верхней половины поля
+        if (planePosY >= 4)
+        {
+            bonusMultiplier += 0.3f;
+        }
+        
+        // Бонус замедления времени
+        if (_timeSlowdownActive)
+        {
+            bonusMultiplier += 0.3f;
+        }
+
+        int calculatedScore = Mathf.RoundToInt(data.Placement * bonusMultiplier);
+        Score += calculatedScore;
     }
 
     private void OnClearPlane(FigureController figure, int planePosY)
     {
-        ScoreType type = ScoreType.DeletePlane;
-        int additionalScore = GetAdditionalScore(_figurePrice[figure.Type] * 2, type, planePosY);
-
-        additionalScore += 300;
-        if (_previousScoreTypeLength >= 1)
+        if (figure == null || !_scoreRules.TryGetValue(figure.Type, out var data))
         {
-            additionalScore += 50;
+            return;
         }
-        Score += additionalScore;
+
+        int baseScore = data.PlaneClear + data.ComboBonus * _comboMultiplier;
+        Score += baseScore;
+        _comboMultiplier++;
     }
 
-    private int GetAdditionalScore(int score, ScoreType type, int planePosY)
+    private void OnLayersDeleted(int deletedLayers, int fullLayers)
     {
-        int additionalScore = score;
-        if (planePosY >= 4)
-        {
-            additionalScore += 30;
-        }
-        if (_previousScoreType == type)
-        {
-            _previousScoreTypeLength++;
-        }
-        else
-        {
-            _previousScoreType = type;
-            _previousScoreTypeLength = 1;
-        }
-
-        return additionalScore;
+        int score = deletedLayers * 300 + fullLayers * 50;
+        Score += score;
+        _comboMultiplier = 1;
     }
+
+    private void OnStartSlowDropAbility(float timeModifier)
+    {
+        _timeSlowdownActive = true;
+    }
+
+    private void OnEndSlowDropAbility()
+    {
+        _timeSlowdownActive = false;
+    }
+
     private void SaveScores()
     {
         var saves = YandexGame.savesData;
-
         saves.previousGameScore = _score;
 
         if (_score > saves.allTimeBestScore)
@@ -111,16 +151,15 @@ public class ScoreManager : MonoBehaviour
             YandexGame.NewLeaderboardScores("bestScore", saves.allTimeBestScore);
         }
 
-        DateTime lastDate;
-        if (!DateTime.TryParse(saves.lastPlayDate, out lastDate))
+        if (!DateTime.TryParse(saves.lastPlayDate, out DateTime lastDate))
+        {
             lastDate = DateTime.MinValue;
+        }
 
         if (lastDate.Date == _currentDate.Date)
         {
             if (_score > saves.dailyBestScore)
-            {
                 saves.dailyBestScore = _score;
-            }
         }
         else
         {
@@ -128,7 +167,6 @@ public class ScoreManager : MonoBehaviour
         }
 
         saves.lastPlayDate = _currentDate.ToString();
-
         YandexGame.SaveProgress();
     }
 }

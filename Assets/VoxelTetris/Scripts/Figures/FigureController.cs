@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.Serialization;
 
 public class FigureController : MonoBehaviour
 {
@@ -28,10 +27,28 @@ public class FigureController : MonoBehaviour
         transform.position += directionInt;
     }
 
-    public void DeleteFigurePart(FigurePartController figurePart)
+    public void DeleteFigurePart(FigurePartController partController)
     {
-        Model.Parts.Remove(figurePart.Model);
-        Destroy(figurePart.gameObject);
+        if (partController == null)
+        {
+            return;
+        }
+
+        var partModel = partController.Model;
+        if (partModel != null)
+        {
+            Model.Parts.Remove(partModel);
+        }
+
+        if (partController.gameObject != null)
+        {
+            Destroy(partController.gameObject);
+        }
+
+        if (Model.Parts.Count == 0)
+        {
+            Destroy(gameObject);
+        }
     }
 
     private void CreateModel()

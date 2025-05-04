@@ -115,10 +115,19 @@ public class FiguresController : MonoBehaviour
 
     public void MoveToBottom()
     {
-        Vector3Int directionInt = Vector3Int.down;
-        while (TryMove(_activeFigure, directionInt))
+        if (_activeFigure == null)
         {
+            return;
         }
+
+        _figuresToMove.Remove(_activeFigure);
+    
+        Vector3Int directionInt = Vector3Int.down;
+        while (ServiceLocator.Instance.GridController.TryMoveFigure(_activeFigure.Model, directionInt))
+        {
+            _activeFigure.Move(directionInt);
+        }
+    
         _activeFigure = null;
     }
 
@@ -170,6 +179,23 @@ public class FiguresController : MonoBehaviour
             foreach (FigurePartController partController in _activeFigure.Parts)
             {
                 partController.transform.position = partController.Model.Position;
+            }
+        }
+    }
+    
+    public void RemoveFigures(IEnumerable<FigureController> figures)
+    {
+        foreach (var figure in figures)
+        {
+            if (figure == _activeFigure)
+            {
+                _activeFigure = null;
+            }
+            _figuresToMove.Remove(figure);
+        
+            if (figure != null && figure.gameObject != null)
+            {
+                Destroy(figure.gameObject);
             }
         }
     }
@@ -249,22 +275,27 @@ public class FiguresController : MonoBehaviour
             return;
         }
 
-        for (int i = _figuresToMove.Count - 1; i >= 0; i--)
+        var figuresToProcess = new List<FigureController>(_figuresToMove);
+    
+        foreach (var figure in figuresToProcess)
         {
-            if (!TryMove(_figuresToMove[i], Vector3Int.down))
+            if (figure == null || figure.Model == null)
             {
-                //Debug.Log($"ФИГУРУ {_figuresToMove[i]} ({i}, {_figuresToMove[i] == _activeFigure}) БОЛЬШЕ НЕ ПОДВИНУТЬ");
-                if (_figuresToMove[i] == _activeFigure)
+                _figuresToMove.Remove(figure);
+                continue;
+            }
+
+            bool canMove = TryMove(figure, Vector3Int.down);
+            if (!canMove)
+            {
+                if (figure == _activeFigure)
                 {
                     _activeFigure = null;
                 }
-                _figuresToMove.RemoveAt(i);
-            }
-            else
-            {
-                //Debug.Log($"ДВИНУЛ ФИГУРУ {_figuresToMove[i]} ({i}, {_figuresToMove[i] == _activeFigure}) НА {Vector3Int.down}");
+                _figuresToMove.Remove(figure);
             }
         }
+    
         _timeFromLastMove = 0;
     }
     
@@ -274,12 +305,24 @@ public class FiguresController : MonoBehaviour
         {
             return false;
         }
-        
-        if (ServiceLocator.Instance.GridController.TryMoveFigure(figure.Model, directionInt))
+
+        bool wasMoved = false;
+        bool canMove = ServiceLocator.Instance.GridController.TryMoveFigure(figure.Model, directionInt);
+    
+        if (canMove)
         {
             figure.Move(directionInt);
-            return true;
+            wasMoved = true;
         }
-        return false;
+        else if (directionInt == Vector3Int.down)
+        {
+            _figuresToMove.Remove(figure);
+            if (figure == _activeFigure)
+            {
+                _activeFigure = null;
+            }
+        }
+    
+        return wasMoved;
     }
 }
