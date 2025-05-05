@@ -1,15 +1,17 @@
-﻿﻿using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
-using YG;
 
 public class HUDScreen : MonoBehaviour
 {
     [SerializeField] private ScoreView _scoreView;
+    [Space] 
+    [SerializeField] private Button _activateSlowDropAbilityButton;
+    [SerializeField] private Button _activateDeletePlainAbilityButton;
     [Space]
     [SerializeField] private Image _slowDropStartAbilityIcon;
     [Space]
@@ -33,6 +35,7 @@ public class HUDScreen : MonoBehaviour
 
     private AbilityManager _abilityManager;
     private AudioManager _audioManager;
+    private ADManager _adManager;
 
     private void Awake()
     {
@@ -56,13 +59,16 @@ public class HUDScreen : MonoBehaviour
     {
         _abilityManager = ServiceLocator.Instance.AbilityManager;
         _audioManager = ServiceLocator.Instance.AudioManager;
+        _adManager = ServiceLocator.Instance.ADManager;
         
         _abilityManager.OnStartSlowDropAbility += OnStartSlowDropAbility;
         _abilityManager.OnEndSlowDropAbility += OnEndSlowDownAbility;
-        YandexGame.RewardVideoEvent += OnRewardVideoEvent;
-        YandexGame.CloseVideoEvent += OnCloseVideoEvent;
+        _adManager.RewardVideoEvent += RewardVideoEvent;
+        
+        _activateSlowDropAbilityButton.onClick.AddListener(() => ActivateAbility(ADRewardType.SlowDropAbility));
+        _activateDeletePlainAbilityButton.onClick.AddListener(() => ActivateAbility(ADRewardType.DeletePlaneAbility));
     }
-    
+
     private void OnDisable()
     {
         StopAllCoroutines();
@@ -74,8 +80,16 @@ public class HUDScreen : MonoBehaviour
         
         _abilityManager.OnStartSlowDropAbility -= OnStartSlowDropAbility;
         _abilityManager.OnEndSlowDropAbility -= OnEndSlowDownAbility;
-        YandexGame.RewardVideoEvent -= OnRewardVideoEvent;
-        YandexGame.CloseVideoEvent -= OnCloseVideoEvent;
+        _adManager.RewardVideoEvent -= RewardVideoEvent;
+        
+        _activateSlowDropAbilityButton.onClick.RemoveAllListeners();
+        _activateDeletePlainAbilityButton.onClick.RemoveAllListeners();
+    }
+
+    private void ActivateAbility(ADRewardType rewardType)
+    {
+        _audioManager.PlaySound(_activateAbilityClip, Vector3.zero);
+        _adManager.RewardVideoEvent(rewardType);
     }
 
     private Vector2 GetSizes(RectTransform rectTransform)
@@ -88,31 +102,25 @@ public class HUDScreen : MonoBehaviour
     {
         StartCoroutine(SpawnScoreDelta(scoreDelta));
     }
-
-    public void OnActivateSlowDropAbility()
-    {
-        OnStartVideoEvent();
-        YandexGame.RewVideoShow(1);
-    }
     
-    public void OnActivateDeletePlaneAbility()
+    private void RewardVideoEvent(ADRewardType adRewardType)
     {
-        OnStartVideoEvent();
-        YandexGame.RewVideoShow(2);
-    }
-
-    private void OnStartVideoEvent()
-    {
-        _audioManager.PlaySound(_activateAbilityClip, Vector3.zero);
-        ServiceLocator.Instance.FiguresController.StopSpawning();
-
-#if  UNITY_EDITOR
-        OnRewardVideoEvent(0);
-#endif
-    }
-    private void OnCloseVideoEvent()
-    {
-        ServiceLocator.Instance.FiguresController.StartSpawning();
+        if (adRewardType is ADRewardType.SlowDropAbility or ADRewardType.DeletePlaneAbility)
+        {
+            switch (adRewardType)
+            {
+                case ADRewardType.SlowDropAbility:
+                    _audioManager.PlaySound(_slowDropAbilityClip, Vector3.zero);
+                    ActivateSlowDropAbility?.Invoke();
+                    break;
+                case ADRewardType.DeletePlaneAbility:
+                    _audioManager.PlaySound(_deletePlainClip, Vector3.zero);
+                    ActivateDeletePlaneAbility?.Invoke();
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
     }
 
     private void OnStartSlowDropAbility(float timeModifier)
@@ -123,21 +131,6 @@ public class HUDScreen : MonoBehaviour
     private void OnEndSlowDownAbility()
     {
         _slowDropStartAbilityIcon.gameObject.SetActive(false);
-    }
-
-    private void OnRewardVideoEvent(int id)
-    {
-        ServiceLocator.Instance.FiguresController.StartSpawning();
-        if (id == 1)
-        {
-            ActivateSlowDropAbility?.Invoke();
-            _audioManager.PlaySound(_slowDropAbilityClip, Vector3.zero);
-        }
-        else if (id == 2)
-        {
-            ActivateDeletePlaneAbility?.Invoke();
-            _audioManager.PlaySound(_deletePlainClip, Vector3.zero);
-        }
     }
 
     private IEnumerator SpawnScoreDelta(int delta)

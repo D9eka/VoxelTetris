@@ -318,6 +318,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _scoreView: {fileID: 5729113833812986550}
+  _activateSlowDropAbilityButton: {fileID: 8241130846173582024}
+  _activateDeletePlainAbilityButton: {fileID: 2317132281283789404}
   _slowDropStartAbilityIcon: {fileID: 277289026869240963}
   _scoreDeltaPrefab: {fileID: 236494597925738898, guid: e8d888b0961621942961836ccc223765, type: 3}
   _scoreDeltaDuration: 1
@@ -540,14 +542,14 @@ PrefabInstance:
     - target: {fileID: 1133092592653451497, guid: 6d036dcc38d7d644c8a925595e7e13b3, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 7994113430351590893}
+      objectReference: {fileID: 0}
     - target: {fileID: 1133092592653451497, guid: 6d036dcc38d7d644c8a925595e7e13b3, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 1133092592653451497, guid: 6d036dcc38d7d644c8a925595e7e13b3, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: OnActivateDeletePlaneAbility
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 1133092592653451497, guid: 6d036dcc38d7d644c8a925595e7e13b3, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
@@ -659,6 +661,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 4193183163937064935, guid: 6d036dcc38d7d644c8a925595e7e13b3, type: 3}
   m_PrefabInstance: {fileID: 3427685983653364405}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &2317132281283789404 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1133092592653451497, guid: 6d036dcc38d7d644c8a925595e7e13b3, type: 3}
+  m_PrefabInstance: {fileID: 3427685983653364405}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &7967439362851865942
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -791,14 +804,14 @@ PrefabInstance:
     - target: {fileID: 1133092592653451497, guid: 6d036dcc38d7d644c8a925595e7e13b3, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 7994113430351590893}
+      objectReference: {fileID: 0}
     - target: {fileID: 1133092592653451497, guid: 6d036dcc38d7d644c8a925595e7e13b3, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 1133092592653451497, guid: 6d036dcc38d7d644c8a925595e7e13b3, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: OnActivateSlowDropAbility
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 1133092592653451497, guid: 6d036dcc38d7d644c8a925595e7e13b3, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
@@ -902,3 +915,14 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 4193183163937064935, guid: 6d036dcc38d7d644c8a925595e7e13b3, type: 3}
   m_PrefabInstance: {fileID: 9072480983601418785}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &8241130846173582024 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1133092592653451497, guid: 6d036dcc38d7d644c8a925595e7e13b3, type: 3}
+  m_PrefabInstance: {fileID: 9072480983601418785}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

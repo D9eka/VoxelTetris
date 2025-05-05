@@ -1,7 +1,5 @@
-﻿using System;
-using TMPro;
+﻿using TMPro;
 using UnityEngine;
-using YG;
 
 public class EndGameScreen : MonoBehaviour
 {
@@ -28,7 +26,8 @@ public class EndGameScreen : MonoBehaviour
         _savesManager.SaveScore(currentScore);
 
         _audioManager.PlaySound(_endGameClip, Vector3.zero);
-        YandexGame.RewVideoShow(3);
+
+        ServiceLocator.Instance.ADManager.StartVideoEvent(ADRewardType.None);
     }
 
     private void SetHeader(int currentScore)

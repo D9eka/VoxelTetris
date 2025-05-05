@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Serialization;
 
 public class ServiceLocator : MonoBehaviour
 {
@@ -12,6 +13,7 @@ public class ServiceLocator : MonoBehaviour
     public AbilityManager AbilityManager => _abilityManager;
     public SavesManager SavesManager => _savesManager;
     public AudioManager AudioManager => _audioManager;
+    public ADManager ADManager => _adManager;
     
     public static ServiceLocator Instance { get; private set; }
     
@@ -28,6 +30,7 @@ public class ServiceLocator : MonoBehaviour
     [Space]
     [SerializeField] private SavesManager _savesManager;
     [SerializeField] private AudioManager _audioManager;
+    [SerializeField] private ADManager _adManager;
 
     private void Awake()
     {
