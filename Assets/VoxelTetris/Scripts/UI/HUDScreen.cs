@@ -89,7 +89,7 @@ public class HUDScreen : MonoBehaviour
     private void ActivateAbility(ADRewardType rewardType)
     {
         _audioManager.PlaySound(_activateAbilityClip, Vector3.zero);
-        _adManager.RewardVideoEvent(rewardType);
+        _adManager.StartVideoEvent(rewardType);
     }
 
     private Vector2 GetSizes(RectTransform rectTransform)
