@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using DG.Tweening;
 using UnityEngine;
 
 public class FiguresController : MonoBehaviour
@@ -199,7 +200,7 @@ public class FiguresController : MonoBehaviour
 
             foreach (FigurePartController partController in _activeFigure.Parts)
             {
-                partController.transform.position = partController.Model.Position;
+                partController.transform.DOMove(partController.Model.Position, 0.3f);
             }
         }
     }
