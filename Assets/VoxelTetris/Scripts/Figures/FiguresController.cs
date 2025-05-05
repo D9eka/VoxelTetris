@@ -116,11 +116,15 @@ public class FiguresController : MonoBehaviour
         _activeFigure = null;
     }
 
-    public void AddFigures(IEnumerable<FigureController> figures)
+    public void MoveFiguresToBottom(IEnumerable<FigureController> figures)
     {
         foreach (FigureController figure in figures)
         {
-            AddFigure(figure);
+            if (figure == _activeFigure)
+            {
+                continue;
+            }
+            MoveToBottom(figure);
         }
     }
 
@@ -142,14 +146,7 @@ public class FiguresController : MonoBehaviour
         }
 
         _figuresToMove.Remove(_activeFigure);
-    
-        Vector3Int directionInt = Vector3Int.down;
-        while (_gridController.TryMoveFigure(_activeFigure.Model, directionInt))
-        {
-            _activeFigure.Move(directionInt);
-        }
-        _activeFigure.IsMoving = false;
-    
+        MoveToBottom(_activeFigure);
         _activeFigure = null;
     }
 
@@ -204,23 +201,6 @@ public class FiguresController : MonoBehaviour
             }
         }
     }
-    
-    public void RemoveFigures(IEnumerable<FigureController> figures)
-    {
-        foreach (var figure in figures)
-        {
-            if (figure == _activeFigure)
-            {
-                _activeFigure = null;
-            }
-            _figuresToMove.Remove(figure);
-        
-            if (figure != null && figure.gameObject != null)
-            {
-                Destroy(figure.gameObject);
-            }
-        }
-    }
 
     public void RemoveFiguresPartAtPlane(IEnumerable<FigureController> figures, int planePosY)
     {
@@ -235,6 +215,21 @@ public class FiguresController : MonoBehaviour
                 }
             }
         }
+    }
+
+    private void MoveToBottom(FigureController figure)
+    {
+        if (figure == null)
+        {
+            return;
+        }
+        Vector3Int directionInt = Vector3Int.down;
+        
+        while (_gridController.TryMoveFigure(figure.Model, directionInt))
+        {
+            figure.Move(directionInt);
+        }
+        figure.IsMoving = false;
     }
 
     private void OnStartSlowDropAbility(float timeModifier)

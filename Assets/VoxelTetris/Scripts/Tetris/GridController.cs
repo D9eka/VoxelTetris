@@ -104,31 +104,17 @@ public class GridController : MonoBehaviour
 
         for (int i = 0; i < planesToDelete; i++)
         {
-            if (i >= Model.Grid.Length)
-            {
-                break;
-            }
-
-            bool wasFull = Model.Grid[i].IsFull();
-            var figuresInPlane = new List<FigureController>(Model.Grid[i].Figures);
-        
-            ClearPlane(i);
-            figuresController.RemoveFigures(figuresInPlane); // Новый метод
-
+            GridPlaneModel plane = Model.Grid[i];
+            bool wasFull = plane.IsFull();
+            figuresController.RemoveFiguresPartAtPlane(plane.Figures, i);
+            plane.Clear();
             deletedLayers++;
-            if (wasFull)
-            {
-                fullLayersCount++;
-            }
+            fullLayersCount += wasFull ? 1 : 0;
         }
 
         ServiceLocator.Instance.AbilityManager.NotifyLayersDeleted(deletedLayers, fullLayersCount);
     
-        // Обновляем только оставшиеся фигуры
-        foreach (var plane in Model.Grid)
-        {
-            figuresController.AddFigures(plane.Figures);
-        }
+        MoveFigures();
     }
 
     private void ClearPlanes()
@@ -210,7 +196,6 @@ public class GridController : MonoBehaviour
 
     private void CheckForFullPlanes()
     {
-        FiguresController figuresController = ServiceLocator.Instance.FiguresController;
         List<int> planesToClear = new List<int>();
 
         for (int i = 0; i < Model.Grid.Length; i++)
@@ -228,13 +213,7 @@ public class GridController : MonoBehaviour
 
         if (planesToClear.Count > 0)
         {
-            for (int i = 0; i < Model.Grid.Length; i++)
-            {
-                if (!planesToClear.Contains(i))
-                {
-                    figuresController.AddFigures(Model.Grid[i].Figures);
-                }
-            }
+            MoveFigures();
         }
     }
 
@@ -253,6 +232,21 @@ public class GridController : MonoBehaviour
         OnClearPlane?.Invoke(lastFigure, planeIndex);
     }
 
+    private void MoveFigures()
+    {
+        FiguresController figuresController = ServiceLocator.Instance.FiguresController;
+        HashSet<FigureController> figuresToMove = new HashSet<FigureController>();
+        for (int i = 0; i < Model.Height; i++)
+        {
+            foreach (FigureController figure in Model.Grid[i].Figures)
+            {
+                figuresToMove.Add(figure);
+            }
+        }
+
+        figuresController.MoveFiguresToBottom(figuresToMove);
+    }
+    
     private void CheckForFiguresInLimit()
     {
         StartCoroutine(CheckForFiguresInLimitCoroutine());
