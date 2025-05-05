@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -60,6 +60,7 @@ public class HUDScreen : MonoBehaviour
         _abilityManager.OnStartSlowDropAbility += OnStartSlowDropAbility;
         _abilityManager.OnEndSlowDropAbility += OnEndSlowDownAbility;
         YandexGame.RewardVideoEvent += OnRewardVideoEvent;
+        YandexGame.CloseVideoEvent += OnCloseVideoEvent;
     }
     
     private void OnDisable()
@@ -74,6 +75,7 @@ public class HUDScreen : MonoBehaviour
         _abilityManager.OnStartSlowDropAbility -= OnStartSlowDropAbility;
         _abilityManager.OnEndSlowDropAbility -= OnEndSlowDownAbility;
         YandexGame.RewardVideoEvent -= OnRewardVideoEvent;
+        YandexGame.CloseVideoEvent -= OnCloseVideoEvent;
     }
 
     private Vector2 GetSizes(RectTransform rectTransform)
@@ -107,6 +109,10 @@ public class HUDScreen : MonoBehaviour
 #if  UNITY_EDITOR
         OnRewardVideoEvent(0);
 #endif
+    }
+    private void OnCloseVideoEvent()
+    {
+        ServiceLocator.Instance.FiguresController.StartSpawning();
     }
 
     private void OnStartSlowDropAbility(float timeModifier)
