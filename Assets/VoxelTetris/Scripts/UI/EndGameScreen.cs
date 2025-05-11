@@ -3,7 +3,8 @@ using UnityEngine;
 
 public class EndGameScreen : MonoBehaviour
 {
-    [SerializeField] private GameObject _header;
+    [SerializeField] private GameObject _recordHeader;
+    [SerializeField] private GameObject _defaultHeader;
     [SerializeField] private TextMeshProUGUI _headerText;
     [Space]
     [SerializeField] private TextMeshProUGUI _scoreText;
@@ -32,18 +33,19 @@ public class EndGameScreen : MonoBehaviour
 
     private void SetHeader(int currentScore)
     {
-        bool isDailyBest = currentScore > _savesManager.GetDailyBestScore();
-        bool isAllTimeBest = currentScore > _savesManager.GetAllTimeBestScore();
-        
-        _header.SetActive(isDailyBest || isAllTimeBest);
-        if (isDailyBest)
-        {
-            _headerText.text = "Новый дневной рекорд";
-        }
+        bool isDailyBest = currentScore >= _savesManager.GetDailyBestScore();
+        bool isAllTimeBest = currentScore >= _savesManager.GetAllTimeBestScore();
+
+        _recordHeader.SetActive(isDailyBest || isAllTimeBest);
+        _defaultHeader.SetActive(!(isDailyBest || isAllTimeBest));
 
         if (isAllTimeBest)
         {
             _headerText.text = "Новый рекорд";
+        }
+        else if (isDailyBest)
+        {
+            _headerText.text = "Новый дневной рекорд";
         }
     }
 }

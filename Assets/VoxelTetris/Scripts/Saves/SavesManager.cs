@@ -47,7 +47,9 @@ public class SavesManager : MonoBehaviour
         {
             return;
         }
-        
+
+        Debug.Log($"Сохранение счёта: {score} | Текущий рекорд: {_saves.allTimeBestScore}");
+
         SavePreviousScore(score);
 
         DateTime currentDate = DateTime.Now.Date;
@@ -56,6 +58,8 @@ public class SavesManager : MonoBehaviour
         SaveAllTimeBestScore(score);
 
         _saves.lastPlayDate = currentDate.ToString();
+
+        Debug.Log($"После сохранения: {_saves.allTimeBestScore}");
         YandexGame.SaveProgress();
     }
 
