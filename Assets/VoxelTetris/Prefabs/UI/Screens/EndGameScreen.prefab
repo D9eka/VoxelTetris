@@ -161,7 +161,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\u041D\u043E\u0432\u044B\u0439 \u0440\u0435\u043A\u043E\u0440\u0434!"
+  m_text: "\u0418\u0433\u0440\u0430 \u043E\u043A\u043E\u043D\u0447\u0435\u043D\u0430"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 669f4f4e862d76649b782c3354df999c, type: 2}
   m_sharedMaterial: {fileID: -1979971238253313046, guid: 669f4f4e862d76649b782c3354df999c, type: 2}
@@ -753,8 +753,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c49ff2a23ac542499cddf7e3987119c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _header: {fileID: 8340702988272002930}
   _headerText: {fileID: 8017981291544125133}
+  _headerNewScoreElems:
+  - {fileID: 2387895462974117832}
+  - {fileID: 6625980542450375415}
   _scoreText: {fileID: 3528148642156289345}
   _endGameClip: {fileID: 8300000, guid: 85581bf602ca04749a882d4b22c0a8ad, type: 3}
 --- !u!1 &8340702988272002930
@@ -940,7 +942,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3446938806976110165, guid: 6d036dcc38d7d644c8a925595e7e13b3, type: 3}
       propertyPath: m_SizeDelta.x
-      value: -64
+      value: -56
       objectReference: {fileID: 0}
     - target: {fileID: 3446938806976110165, guid: 6d036dcc38d7d644c8a925595e7e13b3, type: 3}
       propertyPath: m_SizeDelta.y
@@ -948,7 +950,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3446938806976110165, guid: 6d036dcc38d7d644c8a925595e7e13b3, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: -4
       objectReference: {fileID: 0}
     - target: {fileID: 3446938806976110165, guid: 6d036dcc38d7d644c8a925595e7e13b3, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -1049,7 +1051,7 @@ PrefabInstance:
     - target: {fileID: 4240980360867299155, guid: 6d036dcc38d7d644c8a925595e7e13b3, type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 21300000, guid: c62302fd4164342479775ec13be5ecc0, type: 3}
+      objectReference: {fileID: 21300000, guid: 9d2d9080f70232345a828e5a33b5ef4e, type: 3}
     - target: {fileID: 8442650126606236931, guid: 6d036dcc38d7d644c8a925595e7e13b3, type: 3}
       propertyPath: m_Name
       value: CloseButton

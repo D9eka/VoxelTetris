@@ -1,10 +1,11 @@
 ﻿using TMPro;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class EndGameScreen : MonoBehaviour
 {
-    [SerializeField] private GameObject _header;
     [SerializeField] private TextMeshProUGUI _headerText;
+    [SerializeField] private GameObject[] _headerNewScoreElems;
     [Space]
     [SerializeField] private TextMeshProUGUI _scoreText;
     [Space]
@@ -32,14 +33,17 @@ public class EndGameScreen : MonoBehaviour
         bool isAllTimeBest = currentScore > _savesManager.GetAllTimeBestScore();
 
         bool haveNewBest = isDailyBest || isAllTimeBest;
-        _header.SetActive(haveNewBest);
+        foreach (GameObject headerNewScoreElem in _headerNewScoreElems)
+        {
+            headerNewScoreElem.SetActive(haveNewBest);
+        }
         if (isDailyBest)
         {
-            _headerText.text = "Новый дневной рекорд";
+            _headerText.text = "Новый дневной рекорд!";
         }
         if (isAllTimeBest)
         {
-            _headerText.text = "Новый рекорд";
+            _headerText.text = "Новый рекорд!";
         }
     }
 }
