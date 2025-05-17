@@ -1,0 +1,19 @@
+{
+    "idSave": 310,
+    "isFirstSession": false,
+    "language": "ru",
+    "promptDone": false,
+    "money": 1,
+    "newPlayerName": "Hello!",
+    "openLevels": [
+        false,
+        true,
+        false
+    ],
+    "previousGameScore": 799,
+    "allTimeBestScore": 3800,
+    "dailyBestScore": 3800,
+    "lastPlayDate": "17.05.2025 0:00:00",
+    "soundVolume": 0.23060761392116548,
+    "musicVolume": 0.07541344314813614
+}

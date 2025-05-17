@@ -6,13 +6,13 @@ public class ADManager : MonoBehaviour
 {
     public Action<ADRewardType> RewardVideoEvent;
     
-    private FiguresController _figuresController;
+    private FigureController _figureController;
 
     private bool _needToStopGame;
     
     private void Start()
     {
-        _figuresController = ServiceLocator.Instance.FiguresController;
+        _figureController = ServiceLocator.Instance.FigureController;
         
         YandexGame.RewardVideoEvent += OnRewardVideoEvent;
         YandexGame.CloseVideoEvent += OnCloseVideoEvent;
@@ -27,10 +27,10 @@ public class ADManager : MonoBehaviour
     public void StartVideoEvent(ADRewardType adRewardType)
     {
         Debug.Log("StartVideoEvent");
-        _needToStopGame = _figuresController.Active;
+        _needToStopGame = ServiceLocator.Instance.LevelController.GameStarted && _figureController.Active;
         if (_needToStopGame)
         {
-            ServiceLocator.Instance.FiguresController.StopSpawning();
+            ServiceLocator.Instance.FigureController.StopSpawning();
         }
         
         YandexGame.RewVideoShow((int)adRewardType);
@@ -56,7 +56,7 @@ public class ADManager : MonoBehaviour
     {
         if (_needToStopGame)
         {
-            ServiceLocator.Instance.FiguresController.StartSpawning();
+            ServiceLocator.Instance.FigureController.StartSpawning();
             _needToStopGame = false;
         }
     }

@@ -25,16 +25,15 @@ using UnityEngine;
         private void Start()
         {
             SavesManager saveManager = ServiceLocator.Instance.SavesManager;
-            AudioManager audioManager = ServiceLocator.Instance.AudioManager;
             switch (_type) 
             { 
                 case AudioType.Sound:
                     _source.volume = saveManager.GetSoundVolume();
-                    audioManager.ChangeSoundVolume += ChangeSoundVolume;
+                    saveManager.OnChangeSoundVolume += ChangeSoundVolume;
                     break;
                 case AudioType.Music:
                     _source.volume = saveManager.GetMusicVolume();
-                    audioManager.ChangeMusicVolume += ChangeMusicVolume;
+                    saveManager.OnChangeMusicVolume += ChangeMusicVolume;
                     break;
                 default:
                     throw new NotImplementedException();
@@ -67,15 +66,15 @@ using UnityEngine;
 
         private void OnDestroy()
         {
-            AudioManager audioManager = ServiceLocator.Instance.AudioManager;
+            SavesManager saveManager = ServiceLocator.Instance.SavesManager;
             
             switch (_type)
             {
                 case AudioType.Sound:
-                    audioManager.ChangeSoundVolume -= ChangeSoundVolume;
+                    saveManager.OnChangeSoundVolume -= ChangeSoundVolume;
                     break;
                 case AudioType.Music:
-                    audioManager.ChangeMusicVolume -= ChangeMusicVolume;
+                    saveManager.OnChangeMusicVolume -= ChangeMusicVolume;
                     break;
                 default:
                     throw new NotImplementedException();

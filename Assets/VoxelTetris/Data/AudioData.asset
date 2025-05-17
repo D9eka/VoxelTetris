@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 93ee545edc6c4b45b194609d19ba2363, type: 3}
+  m_Name: AudioData
+  m_EditorClassIdentifier: 
+  _lowMusicClip: {fileID: 8300000, guid: d7a5a516d2912824bba7eac85fe25075, type: 3}
+  _mediumMusicClip: {fileID: 8300000, guid: 2eec583987aa02a4b9f2b1b78f84cf07, type: 3}
+  _highMusicClip: {fileID: 8300000, guid: 1d6d0737ecc5c6a499f045539b378de5, type: 3}
+  _placeFigureClip: {fileID: 8300000, guid: ee59a72c1dc466b41a43193a0cf5faf5, type: 3}
+  _clearPlanesClip: {fileID: 8300000, guid: 03bb23a9dd5be6e408140f7a45c08117, type: 3}
+  _useAbilityClip: {fileID: 8300000, guid: 310d4360bda844440aaa0a6a78e893c4, type: 3}
+  _bestScoreClip: {fileID: 8300000, guid: 5096abd65f769f6409870af8ed854d45, type: 3}
+  _endGameClip: {fileID: 8300000, guid: 85581bf602ca04749a882d4b22c0a8ad, type: 3}

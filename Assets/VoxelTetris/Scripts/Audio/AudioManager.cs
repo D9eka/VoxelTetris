@@ -1,25 +1,18 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
 public class AudioManager : MonoBehaviour
 {
+    [SerializeField] private AudioManagerData _data;
     [SerializeField] private GameObject _audioObjectPrefab;
     [SerializeField] private AudioSource _musicAudioSource;
-    [SerializeField] private AudioClip _initialMusic;
-    [Space]
-    [SerializeField] private AudioClip _lowSoundClip;
-    [Space] 
-    [SerializeField] private int _mediumSoundScore;
-    [SerializeField] private AudioClip _mediumSoundClip;
-    [Space] 
-    [SerializeField] private int _highSoundScore;
-    [SerializeField] private AudioClip _highSoundClip;
 
     public Action<float> ChangeSoundVolume;
     public Action<float> ChangeMusicVolume;
     
-    private ScoreManager _scoreManager;
+    private Vector3 _defaultPosition = Vector3.zero;
     
     private void Awake()
     {
@@ -28,49 +21,72 @@ public class AudioManager : MonoBehaviour
 
     private void Start()
     {
-        _scoreManager = ServiceLocator.Instance.ScoreManager;
-        _scoreManager.OnScoreChanged += OnScoreChanged;
-        
-        PlayMusic(_initialMusic);
+        ScoreManager scoreManager = ServiceLocator.Instance.ScoreManager;
+        scoreManager.OnScoreStateChanged += OnScoreStateChanged;
         
         LevelController levelController = ServiceLocator.Instance.LevelController;
+        levelController.ReachLimit += OnReachLimit;
         levelController.EndGame += EndGame;
+        
+        FigureController figureController = ServiceLocator.Instance.FigureController;
+        figureController.OnPlaceFigure += OnPlaceFigure;
+        figureController.OnClearPlanes += OnClearPlanes;
+        
+        AbilityManager abilityManager = ServiceLocator.Instance.AbilityManager;
+        abilityManager.OnStartSlowDropAbility += OnStartSlowDropAbility;
+        abilityManager.OnDeletePlaneAbility += OnDeletePlaneAbility;
+        
+        PlayMusic(_data.LowMusicClip);
     }
 
-    private void OnScoreChanged(int score)
+    private void OnPlaceFigure(FigureType arg1, int arg2)
     {
-        if (score < _mediumSoundScore)
+        PlaySound(_data.PlaceFigureClip, _defaultPosition);
+    }
+
+    private void OnClearPlanes(FigureType arg1, List<int> arg2)
+    {
+        if (arg2.Count > 0)
         {
-            PlayMusic(_lowSoundClip);
+            PlaySound(_data.ClearPlanesClip, _defaultPosition);
         }
-        if (score < _highSoundScore)
+    }
+
+    private void OnReachLimit()
+    {
+        PlaySound(_data.EndGameClip, _defaultPosition);
+    }
+
+    private void OnStartSlowDropAbility(float obj)
+    {
+        OnActivateAbility();
+    }
+
+
+    private void OnDeletePlaneAbility(int obj)
+    {
+        OnActivateAbility();
+    }
+
+    private void OnActivateAbility()
+    {
+        PlaySound(_data.UseAbilityClip, _defaultPosition);
+    }
+
+    private void OnScoreStateChanged(ScoreState scoreState)
+    {
+        PlayMusic(scoreState switch
         {
-            PlayMusic(_mediumSoundClip);
-        }
-        if (score >= _highSoundScore)
-        {
-            PlayMusic(_highSoundClip);
-        }
+            ScoreState.Low => _data.LowMusicClip,
+            ScoreState.Medium => _data.MediumMusicClip,
+            ScoreState.High => _data.HighMusicClip,
+            _ => _data.LowMusicClip,
+        });
     }
 
     private void EndGame()
     {
-        PlayMusic(_initialMusic);
-    }
-
-    public void OnChangeSoundVolume(float volume)
-    {
-        ChangeSoundVolume?.Invoke(volume);
-    }
-
-    public void OnChangeMusicVolume(float volume)
-    {
-        ChangeMusicVolume?.Invoke(volume);
-    }
-
-    public void PlayMusic(AudioClip[] clips)
-    {
-        PlayMusic(clips[Random.Range(0, clips.Length)]);
+        PlayMusic(_data.LowMusicClip);
     }
 
     public void PlayMusic(AudioClip clip)
@@ -80,11 +96,6 @@ public class AudioManager : MonoBehaviour
         _musicAudioSource.Stop();
         _musicAudioSource.clip = clip;
         _musicAudioSource.Play();
-    }
-
-    public void PlaySound(AudioClip[] clips, Vector3 position)
-    {
-        PlaySound(clips[Random.Range(0, clips.Length)], position);
     }
 
     public void PlaySound(AudioClip clip, Vector3 position)

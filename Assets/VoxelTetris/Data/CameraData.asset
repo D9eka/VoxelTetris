@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: CameraData
   m_EditorClassIdentifier: 
   _rotationSpeed: 5
-  _heightModifier: 0.3
-  _depthModifier: 4
+  _heightModifier: 0.79
+  _depthModifier: 4.87
   _fov: 60

@@ -26,22 +26,22 @@ public class UIController : MonoBehaviour
         
         SetScreen(_startScreen);
         
-        ServiceLocator.Instance.GridController.OnReachLimit += OnReachLimit;
-        
-        ServiceLocator.Instance.LevelController.StartGame += OnStartGame;
-        ServiceLocator.Instance.LevelController.PlayerPause += OnPause;
-        ServiceLocator.Instance.LevelController.UIResume += OnResume;
-        ServiceLocator.Instance.LevelController.EndGame += EndGame;
+        LevelController levelController = ServiceLocator.Instance.LevelController;
+        levelController.StartGame += OnStartGame;
+        levelController.PlayerPause += OnPause;
+        levelController.UIResume += OnResume;
+        levelController.ReachLimit += OnReachLimit;
+        levelController.EndGame += EndGame;
     }
 
     private void OnDisable()
     {
-        ServiceLocator.Instance.GridController.OnReachLimit -= OnReachLimit;
-        
-        ServiceLocator.Instance.LevelController.StartGame -= OnStartGame;
-        ServiceLocator.Instance.LevelController.PlayerPause -= OnPause;
-        ServiceLocator.Instance.LevelController.UIResume -= OnResume;
-        ServiceLocator.Instance.LevelController.EndGame -= EndGame;
+        LevelController levelController = ServiceLocator.Instance.LevelController;
+        levelController.StartGame -= OnStartGame;
+        levelController.PlayerPause -= OnPause;
+        levelController.UIResume -= OnResume;
+        levelController.ReachLimit -= OnReachLimit;
+        levelController.EndGame -= EndGame;
     }
 
     public bool HaveQueue()

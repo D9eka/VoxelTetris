@@ -7,8 +7,8 @@ public class ServiceLocator : MonoBehaviour
     public InputManager InputManager => _inputManager;
     public CameraController CameraController => _cameraController;
     public UIController UIController => _uiController;
-    public FiguresController FiguresController => _figuresController;
-    public GridController GridController => _gridController;
+    public FigureController FigureController => figureController;
+    public Board Board => board;
     public ScoreManager ScoreManager => _scoreManager;
     public AbilityManager AbilityManager => _abilityManager;
     public SavesManager SavesManager => _savesManager;
@@ -21,9 +21,10 @@ public class ServiceLocator : MonoBehaviour
     [SerializeField] private InputManager _inputManager;
     [SerializeField] private CameraController _cameraController;
     [SerializeField] private UIController _uiController;
+    [FormerlySerializedAs("_figuresController")]
     [Space]
-    [SerializeField] private FiguresController _figuresController;
-    [SerializeField] private GridController _gridController;
+    [SerializeField] private FigureController figureController;
+    [FormerlySerializedAs("_gridController")] [SerializeField] private Board board;
     [Space]
     [SerializeField] private ScoreManager _scoreManager;
     [SerializeField] private AbilityManager _abilityManager;

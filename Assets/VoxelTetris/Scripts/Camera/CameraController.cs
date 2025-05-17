@@ -29,12 +29,12 @@ public class CameraController : MonoBehaviour
         _targetAngle = 0f;
         UpdateCameraPosition();
         
-        GridController gridController = ServiceLocator.Instance.GridController;
-        _gridCenter = gridController.View.Center;
+        Board board = ServiceLocator.Instance.Board;
+        Vector3 boardSize = board.Size;
+        _gridCenter = new Vector3(boardSize.x / 2f, boardSize.y / 2f, boardSize.z / 2f);
         
-        GridModel gridModel = gridController.Model;
-        _gridHeight = gridModel.Height;
-        _gridDepth = gridModel.Depth;
+        _gridHeight = boardSize.y;
+        _gridDepth = boardSize.z;
 
         ServiceLocator.Instance.InputManager.PlayerRotateCamera += OnRotateCamera;
     }

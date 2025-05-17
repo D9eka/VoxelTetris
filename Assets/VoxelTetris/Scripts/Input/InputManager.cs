@@ -8,7 +8,7 @@ public class InputManager : MonoBehaviour
 {
     private InputActions _inputActions;
     
-    public Action<Vector2> PlayerMoveFigure;
+    public Action<Vector3Int> PlayerMoveFigure;
     public Action<Vector3> PlayerRotateFigure;
     public Action PlayerDropFigure;
 
@@ -49,8 +49,6 @@ public class InputManager : MonoBehaviour
     {
         DisablePlayerInput();
         
-        ServiceLocator.Instance.GridController.OnReachLimit += OnReachLimit;
-        
         ServiceLocator.Instance.LevelController.StartGame += OnStartGame;
         ServiceLocator.Instance.LevelController.PlayerPause += OnPlayerPause;
         ServiceLocator.Instance.LevelController.UIResume += OnUIResume;
@@ -59,8 +57,6 @@ public class InputManager : MonoBehaviour
 
     private void OnDisable()
     {
-        ServiceLocator.Instance.GridController.OnReachLimit -= OnReachLimit;
-
         _inputActions.Player.MoveFigure.performed -= OnMoveFigurePerformed;
         _inputActions.Player.DropFigure.performed -= OnDropFigurePerformed;
         _inputActions.Player.RotateFigureX.performed -= OnRotateFigureXPerformed;
@@ -98,7 +94,24 @@ public class InputManager : MonoBehaviour
 
     private void OnMoveFigurePerformed(InputAction.CallbackContext context)
     {
-        PlayerMoveFigure?.Invoke(context.ReadValue<Vector2>());
+        Vector2 input = context.ReadValue<Vector2>();
+        
+        float cameraAngle = CameraController.Instance.Angle;
+        float angleRad = -cameraAngle * Mathf.Deg2Rad;
+    
+        float x = input.x;
+        float z = input.y;
+    
+        float rotatedX = x * Mathf.Cos(angleRad) + z * Mathf.Sin(angleRad);
+        float rotatedZ = -x * Mathf.Sin(angleRad) + z * Mathf.Cos(angleRad);
+    
+        Vector3Int directionInt = new Vector3Int(
+            Mathf.RoundToInt(rotatedX),
+            0,
+            Mathf.RoundToInt(rotatedZ)
+        );
+        
+        PlayerMoveFigure?.Invoke(directionInt);
     }
 
     private void OnDropFigurePerformed(InputAction.CallbackContext context)
@@ -139,11 +152,6 @@ public class InputManager : MonoBehaviour
     private void OnUIResumePerformed(InputAction.CallbackContext context)
     {
         UIResume?.Invoke();
-    }
-
-    private void OnReachLimit()
-    {
-        DisablePlayerInput();
     }
 
     private void OnStartGame()

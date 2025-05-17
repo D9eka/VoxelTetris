@@ -5,6 +5,9 @@ using YG;
 public class SavesManager : MonoBehaviour
 {
     private SavesYG _saves;
+
+    public Action<float> OnChangeSoundVolume;
+    public Action<float> OnChangeMusicVolume;
         
     private void Awake()
     {
@@ -72,6 +75,7 @@ public class SavesManager : MonoBehaviour
         }
         
         _saves.soundVolume = volume;
+        OnChangeSoundVolume?.Invoke(volume);
     }
 
     public void SaveMusicVolume(float volume)
@@ -87,6 +91,7 @@ public class SavesManager : MonoBehaviour
         }
         
         _saves.musicVolume = volume;
+        OnChangeMusicVolume?.Invoke(volume);
     }
 
     private void SavePreviousScore(int score)

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 public class AbilityManager : MonoBehaviour
 {
@@ -13,7 +12,7 @@ public class AbilityManager : MonoBehaviour
     public Action<float> OnStartSlowDropAbility;
     public Action OnEndSlowDropAbility;
     public Action<int> OnDeletePlaneAbility;
-    public Action<int, int> OnLayersDeleted;
+    public Action<int> OnLayersDeleted;
 
     private bool _canActivateAbilities;
     private Coroutine _slowDropRoutine;
@@ -40,9 +39,9 @@ public class AbilityManager : MonoBehaviour
         ServiceLocator.Instance.LevelController.EndGame -= EndGame;
     }
 
-    public void NotifyLayersDeleted(int deletedLayers, int fullLayers)
+    public void NotifyLayersDeleted(int deletedLayers)
     {
-        OnLayersDeleted?.Invoke(deletedLayers, fullLayers);
+        OnLayersDeleted?.Invoke(deletedLayers);
     }
 
     private void ActivateSlowDownAbility()

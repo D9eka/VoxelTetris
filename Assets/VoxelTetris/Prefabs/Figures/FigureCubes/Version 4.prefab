@@ -70,7 +70,7 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: d39f15f8e12f1ef4c8193ea480c41869, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 85518237694237160}
+      addedObject: {fileID: 4549765992015533805}
   m_SourcePrefab: {fileID: 100100000, guid: d39f15f8e12f1ef4c8193ea480c41869, type: 3}
 --- !u!23 &3129262985527443711 stripped
 MeshRenderer:
@@ -82,7 +82,7 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: d39f15f8e12f1ef4c8193ea480c41869, type: 3}
   m_PrefabInstance: {fileID: 4372139520830135419}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &85518237694237160
+--- !u!114 &4549765992015533805
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -91,7 +91,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 3489617270253805866}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bc4b318e18604d748c8c79a48346a365, type: 3}
+  m_Script: {fileID: 11500000, guid: 275130f48a68485a88ef71db95ebd94c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _meshToColor: {fileID: 3129262985527443711}

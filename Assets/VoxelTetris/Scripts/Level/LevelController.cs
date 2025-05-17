@@ -6,29 +6,34 @@ public class LevelController : MonoBehaviour
     public Action StartGame;
     public Action PlayerPause;
     public Action UIResume;
+    public Action ReachLimit;
     public Action EndGame;
 
-    private bool _gameStarted;
+    public bool GameStarted { get; private set; }
 
     private void Start()
     {
-        ServiceLocator.Instance.GridController.OnReachLimit += OnReachLimit;
+        ServiceLocator.Instance.Board.OnReachLimit += OnReachLimit;
         ServiceLocator.Instance.InputManager.PlayerPause += OnPlayerPause;
         ServiceLocator.Instance.InputManager.UIResume += OnUIResume;
     }
 
     private void OnDisable()
     {
-        ServiceLocator.Instance.GridController.OnReachLimit -= OnReachLimit;
+        ServiceLocator.Instance.Board.OnReachLimit -= OnReachLimit;
         ServiceLocator.Instance.InputManager.PlayerPause -= OnPlayerPause;
         ServiceLocator.Instance.InputManager.UIResume -= OnUIResume;
     }
 
     private void OnReachLimit()
     {
-        if (!_gameStarted) return;
+        if (!GameStarted)
+        {
+            return;
+        }
 
-        _gameStarted = false;
+        GameStarted = false;
+        ReachLimit?.Invoke();
     }
 
     private void OnPlayerPause()
@@ -40,8 +45,8 @@ public class LevelController : MonoBehaviour
             return;
         }
         
-        FiguresController figuresController = ServiceLocator.Instance.FiguresController;
-        if (!_gameStarted || !figuresController.Active)
+        FigureController figureController = ServiceLocator.Instance.FigureController;
+        if (!GameStarted || !figureController.Active)
         {
             return;
         }
@@ -55,11 +60,9 @@ public class LevelController : MonoBehaviour
         if (uiController.HaveQueue())
         {
             uiController.CloseCurrentScreen();
-            return;
         }
         
-        FiguresController figuresController = ServiceLocator.Instance.FiguresController;
-        if (!_gameStarted || figuresController.Active)
+        if (!GameStarted)
         {
             return;
         }
@@ -69,13 +72,13 @@ public class LevelController : MonoBehaviour
 
     public void ProcessStartGame()
     {
-        _gameStarted = true;
+        GameStarted = true;
         StartGame?.Invoke();
     }
 
     public void ProcessPlayerPause()
     {
-        if (_gameStarted)
+        if (GameStarted)
         {
             PlayerPause?.Invoke();
         }
@@ -83,7 +86,7 @@ public class LevelController : MonoBehaviour
 
     public void ProcessUIResume()
     {
-        if (_gameStarted)
+        if (GameStarted)
         {
             UIResume?.Invoke();
         }
@@ -91,7 +94,7 @@ public class LevelController : MonoBehaviour
 
     public void ProcessEndGame()
     {
-        _gameStarted = false;
+        GameStarted = false;
         EndGame?.Invoke();
     }
 

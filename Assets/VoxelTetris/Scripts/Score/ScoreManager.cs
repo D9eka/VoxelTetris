@@ -1,26 +1,36 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class ScoreManager : MonoBehaviour
 {
     public int Score 
     {
         get => _score;
-        private set
+        set
         {
             _score = value;
             OnScoreChanged?.Invoke(_score);
+            ScoreState state = GetScoreState(_score);
+            if (ScoreState != state)
+            {
+                ScoreState = state;
+                OnScoreStateChanged?.Invoke(ScoreState);
+            }
         }
     }
+    public ScoreState ScoreState { get; private set; }
     
     public Action<int> OnScoreChanged;
+    public Action<ScoreState> OnScoreStateChanged;
 
     private Dictionary<FigureType, ScoreData> _scoreRules;
     private int _score;
-    private int _comboMultiplier = 1;
     private bool _timeSlowdownActive;
     private DateTime _currentDate;
+
+    private FigureController _figureController;
 
     private class ScoreData
     {
@@ -57,9 +67,13 @@ public class ScoreManager : MonoBehaviour
 
     private void Start()
     {
+        _figureController = ServiceLocator.Instance.FigureController;
+        _figureController.OnPlaceFigure += OnPlaceFigure;
+        _figureController.OnClearPlanes += OnClearPlane;
+        
         ServiceLocator.Instance.LevelController.StartGame += StartGame;
-        ServiceLocator.Instance.GridController.OnPlaceFigure += OnPlaceFigure;
-        ServiceLocator.Instance.GridController.OnClearPlane += OnClearPlane;
+        
+        Board board = ServiceLocator.Instance.Board;
         ServiceLocator.Instance.AbilityManager.OnStartSlowDropAbility += OnStartSlowDropAbility;
         ServiceLocator.Instance.AbilityManager.OnEndSlowDropAbility += OnEndSlowDropAbility;
         ServiceLocator.Instance.AbilityManager.OnLayersDeleted += OnLayersDeleted;
@@ -68,8 +82,8 @@ public class ScoreManager : MonoBehaviour
     private void OnDisable()
     {
         ServiceLocator.Instance.LevelController.StartGame -= StartGame;
-        ServiceLocator.Instance.GridController.OnPlaceFigure -= OnPlaceFigure;
-        ServiceLocator.Instance.GridController.OnClearPlane -= OnClearPlane;
+        //_figureController.OnPlaceFigure -= OnPlaceFigure;
+        //ServiceLocator.Instance.Board.OnClearPlane -= OnClearPlane;
         ServiceLocator.Instance.AbilityManager.OnStartSlowDropAbility -= OnStartSlowDropAbility;
         ServiceLocator.Instance.AbilityManager.OnEndSlowDropAbility -= OnEndSlowDropAbility;
         ServiceLocator.Instance.AbilityManager.OnLayersDeleted -= OnLayersDeleted;
@@ -78,12 +92,11 @@ public class ScoreManager : MonoBehaviour
     private void StartGame()
     {
         Score = 0;
-        _comboMultiplier = 1;
     }
 
-    private void OnPlaceFigure(FigureController figure, int planePosY)
+    private void OnPlaceFigure(FigureType figure, int centerPosY)
     {
-        if (!_scoreRules.TryGetValue(figure.Type, out var data))
+        if (!_scoreRules.TryGetValue(figure, out var data))
         {
             return;
         }
@@ -91,7 +104,7 @@ public class ScoreManager : MonoBehaviour
         float bonusMultiplier = 1f;
         
         // Бонус верхней половины поля
-        if (planePosY >= 4)
+        if (centerPosY >= 4)
         {
             bonusMultiplier += 0.3f;
         }
@@ -106,23 +119,22 @@ public class ScoreManager : MonoBehaviour
         Score += calculatedScore;
     }
 
-    private void OnClearPlane(FigureController figure, int planePosY)
+    private void OnClearPlane(FigureType figure, List<int> planePosY)
     {
-        if (!figure || !_scoreRules.TryGetValue(figure.Type, out var data))
+        if (planePosY.Count == 0 || !_scoreRules.TryGetValue(figure, out var data))
         {
             return;
         }
 
-        int baseScore = data.PlaneClear + data.ComboBonus * _comboMultiplier;
+        int comboMultiplier = planePosY.Count;
+        int baseScore = data.PlaneClear + data.ComboBonus * comboMultiplier;
         Score += baseScore;
-        _comboMultiplier++;
     }
 
-    private void OnLayersDeleted(int deletedLayers, int fullLayers)
+    private void OnLayersDeleted(int deletedLayers)
     {
-        int score = deletedLayers * 300 + fullLayers * 50;
+        int score = deletedLayers * 300;
         Score += score;
-        _comboMultiplier = 1;
     }
 
     private void OnStartSlowDropAbility(float timeModifier)
@@ -133,5 +145,14 @@ public class ScoreManager : MonoBehaviour
     private void OnEndSlowDropAbility()
     {
         _timeSlowdownActive = false;
+    }
+
+    private ScoreState GetScoreState(int score)
+    {
+        if (score >= (int)ScoreState.High)
+            return ScoreState.High;
+        if (score >= (int)ScoreState.Medium)
+            return ScoreState.Medium;
+        return ScoreState.Low;
     }
 }

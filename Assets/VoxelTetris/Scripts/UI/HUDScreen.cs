@@ -100,6 +100,10 @@ public class HUDScreen : MonoBehaviour
 
     private void OnScoreChanged(int scoreDelta)
     {
+        if (scoreDelta == 0)
+        {
+            return;
+        }
         StartCoroutine(SpawnScoreDelta(scoreDelta));
     }
     
