@@ -196,21 +196,23 @@ public class FigureController : MonoBehaviour
         _isLocking = false;
     }
 
-    public void Rotate(Vector3 axis) 
+    public void Rotate(Vector3 axis)
     {
-        if (ActiveFigure != null && CanRotate(axis) && !_isLocking) 
+        if (ActiveFigure == null || !CanRotate(axis) || _isLocking)
         {
-            Quaternion currentRot = ActiveFigure.transform.rotation;
-            Quaternion deltaRot = Quaternion.Euler(axis * 90f);
-            Quaternion targetRot = deltaRot * currentRot;
+            return;
+        }
 
-            DOTween.Complete(ActiveFigure.transform);
+        Quaternion deltaRot = Quaternion.Euler(axis * 90f);
+        Vector3 pivotPos = ActiveFigure.Center.position;
+        foreach (Transform cube in ActiveFigure.Parts) 
+        {
+            Vector3 relativePosition = cube.position - pivotPos;
+            Vector3 rotatedPosition = deltaRot * relativePosition;
+            Vector3Int newPosition = Vector3Int.RoundToInt(rotatedPosition + pivotPos);
 
-            ActiveFigure.transform
-                .DORotateQuaternion(targetRot, 0.2f)
-                .OnComplete(() => {
-                    ActiveFigure.transform.rotation = targetRot;
-                });
+            DOTween.Complete(cube);
+            cube.DOMove(newPosition, 0.3f).SetLink(ActiveFigure.gameObject);
         }
     }
 
@@ -226,11 +228,11 @@ public class FigureController : MonoBehaviour
 
         foreach (Transform cube in ActiveFigure.Parts) 
         {
-            Vector3 dir = cube.position - pivotPos;
-            Vector3 rotatedDir = deltaRot * dir;
-            Vector3Int newCell = Vector3Int.RoundToInt(pivotPos + rotatedDir);
+            Vector3 relativePosition = cube.position - pivotPos;
+            Vector3 rotatedPosition = deltaRot * relativePosition;
+            Vector3Int newPosition = Vector3Int.RoundToInt(rotatedPosition + pivotPos);
 
-            if (!_board.IsInside(newCell) || _board.IsOccupied(newCell))
+            if (!_board.IsInside(newPosition) || _board.IsOccupied(newPosition))
             {
                 return false;
             }
