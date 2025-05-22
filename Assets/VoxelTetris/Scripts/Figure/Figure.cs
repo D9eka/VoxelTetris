@@ -3,11 +3,11 @@ using UnityEngine;
 
 public class Figure : MonoBehaviour
 {
-    [SerializeField] private FigureType _type;
+    [SerializeField] private FigureSO _data;
     [SerializeField] private Transform _center;
     [SerializeField] private int _height;
     
-    public FigureType Type => _type;
+    public FigureSO Data => _data;
     public List<Transform> Parts { get; private set; }
     public Transform Center => _center;
     public int Height => _height;

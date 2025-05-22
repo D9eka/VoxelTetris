@@ -9,10 +9,10 @@ public class FigureController : MonoBehaviour
 
     public bool Active { get; private set; }
     public Figure ActiveFigure { get; private set; }
-    public Action<FigureType, int> OnPlaceFigure;
-    public Action<FigureType, List<int>> OnClearPlanes;
     public bool IsLocking;
     
+    public Action<FigureSO, int> OnPlaceFigure;
+    public Action<FigureSO, List<int>> OnClearPlanes;
 
     private FigureMover _figureMover;
     private FigureRotator _figureRotator;
@@ -123,10 +123,10 @@ public class FigureController : MonoBehaviour
         int figureCenterPosY = Mathf.RoundToInt(figure.Center.position.y);
         
         _board.PlaceFigure(figure);
-        OnPlaceFigure?.Invoke(figureType, figureCenterPosY);
+        OnPlaceFigure?.Invoke(figureData, figureCenterPosY);
         
         List<int> cleared = _board.ClearFullLayers();
-        OnClearPlanes?.Invoke(figureType, cleared);
+        OnClearPlanes?.Invoke(figureData, cleared);
         
         if (figure == ActiveFigure) 
         {

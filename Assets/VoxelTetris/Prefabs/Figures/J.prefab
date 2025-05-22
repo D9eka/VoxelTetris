@@ -48,7 +48,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 055451f544ad404f98553a6c4b7d3cdb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _type: 4
+  _data: {fileID: 11400000, guid: 782a95314b41bc4479f24e0bc81ba4a7, type: 2}
   _center: {fileID: 7123811304870372832}
   _height: 3
 --- !u!1001 &3621123038741495869
