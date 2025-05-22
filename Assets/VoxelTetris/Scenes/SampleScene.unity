@@ -158,6 +158,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e58dfe30574e4dc48c1c5e7105994856, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _data: {fileID: 11400000, guid: c7d95c31838c1bd499092458229ce81f, type: 2}
 --- !u!4 &93586137
 Transform:
   m_ObjectHideFlags: 0
@@ -1862,6 +1863,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _figureSpawner: {fileID: 2089270477}
   _figureLight: {fileID: 2089270479}
+  IsLocking: 0
 --- !u!114 &2089270477
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2886,7 +2888,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1781652220385279800, guid: 7f17116da97c1e748b003518fa65c68b, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 836.14496
+      value: 836.1449
       objectReference: {fileID: 0}
     - target: {fileID: 1781652220385279800, guid: 7f17116da97c1e748b003518fa65c68b, type: 3}
       propertyPath: m_AnchoredPosition.y

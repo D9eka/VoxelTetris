@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class ScoreManager : MonoBehaviour
 {
+    [SerializeField] private ScoreSO _data;
+    
     public int Score 
     {
         get => _score;
@@ -112,9 +114,9 @@ public class ScoreManager : MonoBehaviour
 
     private ScoreState GetScoreState(int score)
     {
-        if (score >= (int)ScoreState.High)
+        if (score >= _data.HighScoreStateValue)
             return ScoreState.High;
-        if (score >= (int)ScoreState.Medium)
+        if (score >= _data.MediumScoreStateValue)
             return ScoreState.Medium;
         return ScoreState.Low;
     }
