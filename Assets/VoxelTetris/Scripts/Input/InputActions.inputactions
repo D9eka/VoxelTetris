@@ -51,6 +51,15 @@
                     "initialStateCheck": false
                 },
                 {
+                    "name": "HardDropFigure",
+                    "type": "Button",
+                    "id": "9c36fffa-a1a7-43e0-867c-93ac2a1c54a1",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
                     "name": "ZoomCamera",
                     "type": "Value",
                     "id": "d211169b-2160-4aae-8050-ee46b6d551d5",
@@ -258,7 +267,7 @@
                 {
                     "name": "",
                     "id": "2ccb7d64-a81a-4bb4-8d7c-a867d8452444",
-                    "path": "<Keyboard>/space",
+                    "path": "<Keyboard>/shift",
                     "interactions": "",
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
@@ -269,11 +278,33 @@
                 {
                     "name": "",
                     "id": "b5ce5cb2-d451-4f56-ae9a-7041495f0d71",
-                    "path": "<Gamepad>/buttonSouth",
+                    "path": "<Gamepad>/leftShoulder",
                     "interactions": "",
                     "processors": "",
                     "groups": ";Gamepad",
                     "action": "DropFigure",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "11362d52-6c09-46a0-887b-4addd37195c2",
+                    "path": "<Keyboard>/space",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "HardDropFigure",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "89876f76-e69f-4ce0-9827-2faabd97492a",
+                    "path": "<Gamepad>/buttonSouth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Gamepad",
+                    "action": "HardDropFigure",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },

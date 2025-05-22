@@ -11,6 +11,7 @@ public class InputManager : MonoBehaviour
     public Action<Vector3Int> PlayerMoveFigure;
     public Action<Vector3> PlayerRotateFigure;
     public Action PlayerDropFigure;
+    public Action PlayerHardDropFigure;
 
     public Action<float> PlayerRotateCamera;
     
@@ -35,6 +36,7 @@ public class InputManager : MonoBehaviour
 
         _inputActions.Player.MoveFigure.performed += OnMoveFigurePerformed;
         _inputActions.Player.DropFigure.performed += OnDropFigurePerformed;
+        _inputActions.Player.HardDropFigure.performed += OnHardDropFigurePerformed;
         _inputActions.Player.RotateFigureX.performed += OnRotateFigureXPerformed;
         _inputActions.Player.RotateFigureY.performed += OnRotateFigureYPerformed;
         _inputActions.Player.RotateFigureZ.performed += OnRotateFigureZPerformed;
@@ -59,6 +61,7 @@ public class InputManager : MonoBehaviour
     {
         _inputActions.Player.MoveFigure.performed -= OnMoveFigurePerformed;
         _inputActions.Player.DropFigure.performed -= OnDropFigurePerformed;
+        _inputActions.Player.HardDropFigure.performed -= OnHardDropFigurePerformed;
         _inputActions.Player.RotateFigureX.performed -= OnRotateFigureXPerformed;
         _inputActions.Player.RotateFigureY.performed -= OnRotateFigureYPerformed;
         _inputActions.Player.RotateFigureZ.performed -= OnRotateFigureZPerformed;
@@ -113,10 +116,15 @@ public class InputManager : MonoBehaviour
         
         PlayerMoveFigure?.Invoke(directionInt);
     }
-
+    
     private void OnDropFigurePerformed(InputAction.CallbackContext context)
     {
         PlayerDropFigure?.Invoke();
+    }
+
+    private void OnHardDropFigurePerformed(InputAction.CallbackContext context)
+    {
+        PlayerHardDropFigure?.Invoke();
     }
 
     private void OnRotateFigureXPerformed(InputAction.CallbackContext context)

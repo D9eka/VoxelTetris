@@ -137,6 +137,15 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
+                    ""name"": ""HardDropFigure"",
+                    ""type"": ""Button"",
+                    ""id"": ""9c36fffa-a1a7-43e0-867c-93ac2a1c54a1"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
                     ""name"": ""ZoomCamera"",
                     ""type"": ""Value"",
                     ""id"": ""d211169b-2160-4aae-8050-ee46b6d551d5"",
@@ -344,7 +353,7 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""2ccb7d64-a81a-4bb4-8d7c-a867d8452444"",
-                    ""path"": ""<Keyboard>/space"",
+                    ""path"": ""<Keyboard>/shift"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": "";Keyboard&Mouse"",
@@ -355,11 +364,33 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""b5ce5cb2-d451-4f56-ae9a-7041495f0d71"",
-                    ""path"": ""<Gamepad>/buttonSouth"",
+                    ""path"": ""<Gamepad>/leftShoulder"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": "";Gamepad"",
                     ""action"": ""DropFigure"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""11362d52-6c09-46a0-887b-4addd37195c2"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard&Mouse"",
+                    ""action"": ""HardDropFigure"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""89876f76-e69f-4ce0-9827-2faabd97492a"",
+                    ""path"": ""<Gamepad>/buttonSouth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Gamepad"",
+                    ""action"": ""HardDropFigure"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -1104,6 +1135,7 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
         m_Player_RotateFigureY = m_Player.FindAction("RotateFigureY", throwIfNotFound: true);
         m_Player_RotateFigureZ = m_Player.FindAction("RotateFigureZ", throwIfNotFound: true);
         m_Player_DropFigure = m_Player.FindAction("DropFigure", throwIfNotFound: true);
+        m_Player_HardDropFigure = m_Player.FindAction("HardDropFigure", throwIfNotFound: true);
         m_Player_ZoomCamera = m_Player.FindAction("ZoomCamera", throwIfNotFound: true);
         m_Player_RotateCamera = m_Player.FindAction("RotateCamera", throwIfNotFound: true);
         m_Player_Pause = m_Player.FindAction("Pause", throwIfNotFound: true);
@@ -1206,6 +1238,7 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_RotateFigureY;
     private readonly InputAction m_Player_RotateFigureZ;
     private readonly InputAction m_Player_DropFigure;
+    private readonly InputAction m_Player_HardDropFigure;
     private readonly InputAction m_Player_ZoomCamera;
     private readonly InputAction m_Player_RotateCamera;
     private readonly InputAction m_Player_Pause;
@@ -1240,6 +1273,10 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Player/DropFigure".
         /// </summary>
         public InputAction @DropFigure => m_Wrapper.m_Player_DropFigure;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/HardDropFigure".
+        /// </summary>
+        public InputAction @HardDropFigure => m_Wrapper.m_Player_HardDropFigure;
         /// <summary>
         /// Provides access to the underlying input action "Player/ZoomCamera".
         /// </summary>
@@ -1293,6 +1330,9 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
             @DropFigure.started += instance.OnDropFigure;
             @DropFigure.performed += instance.OnDropFigure;
             @DropFigure.canceled += instance.OnDropFigure;
+            @HardDropFigure.started += instance.OnHardDropFigure;
+            @HardDropFigure.performed += instance.OnHardDropFigure;
+            @HardDropFigure.canceled += instance.OnHardDropFigure;
             @ZoomCamera.started += instance.OnZoomCamera;
             @ZoomCamera.performed += instance.OnZoomCamera;
             @ZoomCamera.canceled += instance.OnZoomCamera;
@@ -1328,6 +1368,9 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
             @DropFigure.started -= instance.OnDropFigure;
             @DropFigure.performed -= instance.OnDropFigure;
             @DropFigure.canceled -= instance.OnDropFigure;
+            @HardDropFigure.started -= instance.OnHardDropFigure;
+            @HardDropFigure.performed -= instance.OnHardDropFigure;
+            @HardDropFigure.canceled -= instance.OnHardDropFigure;
             @ZoomCamera.started -= instance.OnZoomCamera;
             @ZoomCamera.performed -= instance.OnZoomCamera;
             @ZoomCamera.canceled -= instance.OnZoomCamera;
@@ -1683,6 +1726,13 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnDropFigure(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "HardDropFigure" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnHardDropFigure(InputAction.CallbackContext context);
         /// <summary>
         /// Method invoked when associated input action "ZoomCamera" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
         /// </summary>
