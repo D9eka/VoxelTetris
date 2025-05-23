@@ -9,29 +9,40 @@ public class ADManager : MonoBehaviour
     private FigureController _figureController;
 
     private bool _needToStopGame;
+
+    public Action PauseSound;
+    public Action ResumeSound;
     
     private void Start()
     {
         _figureController = ServiceLocator.Instance.FigureController;
         
+        LevelController levelController = ServiceLocator.Instance.LevelController;
+        levelController.PlayerPause += StartFullAd;
+        levelController.EndGame += StartFullAd;
+        
         YandexGame.RewardVideoEvent += OnRewardVideoEvent;
         YandexGame.CloseVideoEvent += OnCloseVideoEvent;
+
+        YandexGame.CloseFullAdEvent += OnCloseVideoEvent;
     }
 
     private void OnDestroy()
     {
+        LevelController levelController = ServiceLocator.Instance.LevelController;
+        levelController.PlayerPause -= StartFullAd;
+        levelController.EndGame -= StartFullAd;
+        
         YandexGame.RewardVideoEvent -= OnRewardVideoEvent;
         YandexGame.CloseVideoEvent -= OnCloseVideoEvent;
+
+        YandexGame.CloseFullAdEvent -= OnCloseVideoEvent;
     }
 
-    public void StartVideoEvent(ADRewardType adRewardType)
+    public void StartRewardVideoEvent(ADRewardType adRewardType)
     {
-        Debug.Log("StartVideoEvent");
-        _needToStopGame = ServiceLocator.Instance.LevelController.GameStarted && _figureController.Active;
-        if (_needToStopGame)
-        {
-            ServiceLocator.Instance.FigureController.StopSpawning();
-        }
+        Debug.Log("StartRewardVideoEvent");
+        PauseGame();
         
         YandexGame.RewVideoShow((int)adRewardType);
 
@@ -40,9 +51,17 @@ public class ADManager : MonoBehaviour
 #endif
     }
 
+    public void StartFullAd()
+    {
+        Debug.Log("StartFullVideoEvent");
+        PauseGame();
+
+        YandexGame.FullscreenShow();
+    }
+
     private void OnRewardVideoEvent(int id)
     {
-        Debug.Log("EndVideoEvent");
+        Debug.Log("EndRewardVideoEvent");
         OnVideoEnd();
         RewardVideoEvent?.Invoke((ADRewardType)id);
     }
@@ -54,10 +73,26 @@ public class ADManager : MonoBehaviour
 
     private void OnVideoEnd()
     {
+        ResumeGame();
+    }
+
+    private void PauseGame()
+    {
+        _needToStopGame = ServiceLocator.Instance.LevelController.GameStarted && _figureController.Active;
+        if (_needToStopGame)
+        {
+            ServiceLocator.Instance.FigureController.StopSpawning();
+        }
+        PauseSound?.Invoke();
+    }
+
+    private void ResumeGame()
+    {
         if (_needToStopGame)
         {
             ServiceLocator.Instance.FigureController.StartSpawning();
             _needToStopGame = false;
         }
+        ResumeSound?.Invoke();
     }
 }

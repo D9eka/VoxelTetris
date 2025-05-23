@@ -16,6 +16,8 @@ using UnityEngine;
 
         private AudioSource _source;
         private AudioClip _sound;
+        
+        private SavesManager _savesManager;
 
         private void Awake()
         {
@@ -24,20 +26,44 @@ using UnityEngine;
 
         private void Start()
         {
-            SavesManager saveManager = ServiceLocator.Instance.SavesManager;
+            _savesManager = ServiceLocator.Instance.SavesManager;
             switch (_type) 
             { 
                 case AudioType.Sound:
-                    _source.volume = saveManager.GetSoundVolume();
-                    saveManager.OnChangeSoundVolume += ChangeSoundVolume;
+                    _savesManager.OnChangeSoundVolume += ChangeSoundVolume;
                     break;
                 case AudioType.Music:
-                    _source.volume = saveManager.GetMusicVolume();
-                    saveManager.OnChangeMusicVolume += ChangeMusicVolume;
+                    _savesManager.OnChangeMusicVolume += ChangeMusicVolume;
                     break;
                 default:
                     throw new NotImplementedException();
             }
+
+            _source.volume = GetVolume();
+            
+            ADManager adManager = ServiceLocator.Instance.ADManager;
+            adManager.PauseSound += PauseSound;
+            adManager.ResumeSound += ResumeSound;
+        }
+
+        private void PauseSound()
+        {
+            _source.volume = 0f;
+        }
+
+        private void ResumeSound()
+        {
+            _source.volume = GetVolume();
+        }
+
+        private float GetVolume()
+        {
+            return _type switch
+            {
+                AudioType.Sound => _savesManager.GetSoundVolume(),
+                AudioType.Music => _savesManager.GetMusicVolume(),
+                _ => throw new NotImplementedException()
+            };
         }
 
         private void ChangeSoundVolume(float volume)

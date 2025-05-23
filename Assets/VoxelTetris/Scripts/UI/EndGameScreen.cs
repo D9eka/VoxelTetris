@@ -1,6 +1,5 @@
 ﻿using TMPro;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 public class EndGameScreen : MonoBehaviour
 {
@@ -23,8 +22,6 @@ public class EndGameScreen : MonoBehaviour
         _scoreText.text = currentScore.ToString();
         SetHeader(currentScore);
         _savesManager.SaveScore(currentScore);
-
-        ServiceLocator.Instance.ADManager.StartVideoEvent(ADRewardType.None);
     }
 
     private void SetHeader(int currentScore)

@@ -76,7 +76,7 @@ namespace YG
         public AdCallsMode adDisplayCalls = AdCallsMode.until;
 
         [Tooltip("Интервал запросов на вызов полноэкранной рекламы."), Min(1)]
-        public int fullscreenAdInterval = 60;
+        public int fullscreenAdInterval = 15;
 
 #if UNITY_EDITOR
         [Tooltip("Длительность симуляции показа рекламы."), Min(0)]
