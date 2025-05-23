@@ -129,7 +129,8 @@ public class InputManager : MonoBehaviour
 
     private void OnRotateFigureXPerformed(InputAction.CallbackContext context)
     {
-        PlayerRotateFigure?.Invoke(new Vector3(1, 0, 0));
+        Vector3 rotatedAxis = GetRotatedAxis(new Vector3(1, 0, 0));
+        PlayerRotateFigure?.Invoke(rotatedAxis);
     }
 
     private void OnRotateFigureYPerformed(InputAction.CallbackContext context)
@@ -139,7 +140,8 @@ public class InputManager : MonoBehaviour
 
     private void OnRotateFigureZPerformed(InputAction.CallbackContext context)
     {
-        PlayerRotateFigure?.Invoke(new Vector3(0, 0, 1));
+        Vector3 rotatedAxis = GetRotatedAxis(new Vector3(0, 0, 1));
+        PlayerRotateFigure?.Invoke(rotatedAxis);
     }
 
     private void OnPlayerRotateCameraPerformed(InputAction.CallbackContext context)
@@ -182,5 +184,16 @@ public class InputManager : MonoBehaviour
     private void OnEndGame()
     {
         DisablePlayerInput();
+    }
+    
+    private Vector3 GetRotatedAxis(Vector3 originalAxis)
+    {
+        float cameraAngle = CameraController.Instance.Angle;
+        float angleRad = -cameraAngle * Mathf.Deg2Rad;
+
+        float rotatedX = originalAxis.x * Mathf.Cos(angleRad) + originalAxis.z * Mathf.Sin(angleRad);
+        float rotatedZ = -originalAxis.x * Mathf.Sin(angleRad) + originalAxis.z * Mathf.Cos(angleRad);
+
+        return new Vector3(rotatedX, originalAxis.y, rotatedZ);
     }
 }
