@@ -105,5 +105,9 @@ using UnityEngine;
                 default:
                     throw new NotImplementedException();
             }
+            
+            ADManager adManager = ServiceLocator.Instance.ADManager;
+            adManager.PauseSound -= PauseSound;
+            adManager.ResumeSound -= ResumeSound;
         }
     }
