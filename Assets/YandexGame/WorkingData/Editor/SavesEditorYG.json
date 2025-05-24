@@ -1,5 +1,5 @@
 {
-    "idSave": 335,
+    "idSave": 338,
     "isFirstSession": false,
     "language": "ru",
     "promptDone": false,
@@ -10,10 +10,10 @@
         true,
         false
     ],
-    "previousGameScore": 1759,
+    "previousGameScore": 612,
     "allTimeBestScore": 3800,
-    "dailyBestScore": 2539,
-    "lastPlayDate": "23.05.2025 0:00:00",
+    "dailyBestScore": 612,
+    "lastPlayDate": "24.05.2025 0:00:00",
     "soundVolume": 0.23060761392116548,
     "musicVolume": 0.07541344314813614
 }

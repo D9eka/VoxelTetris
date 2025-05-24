@@ -1056,8 +1056,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: CloseButton
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedComponents:
+    - {fileID: 5981350284034831683, guid: 6d036dcc38d7d644c8a925595e7e13b3, type: 3}
+    m_RemovedGameObjects:
+    - {fileID: 389441919131111002, guid: 6d036dcc38d7d644c8a925595e7e13b3, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6d036dcc38d7d644c8a925595e7e13b3, type: 3}
@@ -1234,8 +1236,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: StatisticButton
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedComponents:
+    - {fileID: 5981350284034831683, guid: 6d036dcc38d7d644c8a925595e7e13b3, type: 3}
+    m_RemovedGameObjects:
+    - {fileID: 389441919131111002, guid: 6d036dcc38d7d644c8a925595e7e13b3, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6d036dcc38d7d644c8a925595e7e13b3, type: 3}
@@ -1416,8 +1420,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: ReloadButton
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedComponents:
+    - {fileID: 5981350284034831683, guid: 6d036dcc38d7d644c8a925595e7e13b3, type: 3}
+    m_RemovedGameObjects:
+    - {fileID: 389441919131111002, guid: 6d036dcc38d7d644c8a925595e7e13b3, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6d036dcc38d7d644c8a925595e7e13b3, type: 3}
