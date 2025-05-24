@@ -201,7 +201,7 @@ namespace YG
 #if !UNITY_EDITOR
                 FullAdShow();
 #else
-                Message("Fullscren Ad");
+                Message("Fullscreen Ad");
                 FullAdInEditor();
 #endif
             }

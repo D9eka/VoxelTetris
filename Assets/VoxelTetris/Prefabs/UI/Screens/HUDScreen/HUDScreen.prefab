@@ -513,8 +513,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: StatisticButton
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedComponents:
+    - {fileID: 5981350284034831683, guid: 6d036dcc38d7d644c8a925595e7e13b3, type: 3}
+    m_RemovedGameObjects:
+    - {fileID: 389441919131111002, guid: 6d036dcc38d7d644c8a925595e7e13b3, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6d036dcc38d7d644c8a925595e7e13b3, type: 3}
@@ -650,6 +652,11 @@ PrefabInstance:
     - target: {fileID: 8442650126606236931, guid: 6d036dcc38d7d644c8a925595e7e13b3, type: 3}
       propertyPath: m_Name
       value: DeletePlaneAbilityButton
+      objectReference: {fileID: 0}
+    - target: {fileID: 8946763008313906642, guid: 6d036dcc38d7d644c8a925595e7e13b3, type: 3}
+      propertyPath: m_text
+      value: "\u041E\u0447\u0438\u0441\u0442\u0438\u0442\u044C\n2 \u043D\u0438\u0436\u043D\u0438\u0445
+        \u0441\u043B\u043E\u044F"
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
